@@ -5,16 +5,16 @@ author：xdz1
 
 **************************************
 [rewrite_local]
-#! ^https:([\S\s]*?)gameloft.com/scripts/general/sync_all.php url script-response-body https://raw.githubusercontent.com/xudazhu1/QuantumultX-/main/as8.js
-#! ^https:([\S\s]*?)gameloft.com/scripts/energy/pre_tle_race.php url script-response-body https://raw.githubusercontent.com/xudazhu1/QuantumultX-/main/as8.js
-^https:([\S\s]*?)gameloft.com/configs/users/me url script-response-body https://raw.githubusercontent.com/xudazhu1/QuantumultX-/main/as8.js
-^https:([\S\s]*?)unityads.unity3d.com/([\S\s]*?)/config.json url script-response-body https://raw.githubusercontent.com/xudazhu1/QuantumultX-/main/as8.js
+#! ^https:([\S\s]*?)gameloft.com/scripts/general/sync_all.php url script-response-body https://raw.githubusercontent.com/JaraxW/AS8/main/A8.js
+#! ^https:([\S\s]*?)gameloft.com/scripts/energy/pre_tle_race.php url script-response-body https://raw.githubusercontent.com/JaraxW/AS8/main/A8.js
+^https:([\S\s]*?)gameloft.com/configs/users/me url script-response-body https://raw.githubusercontent.com/JaraxW/AS8/main/A8.js
+^https:([\S\s]*?)unityads.unity3d.com/([\S\s]*?)/config.json url script-response-body https://raw.githubusercontent.com/JaraxW/AS8/main/A8.js
 
-^https:([\S\s]*?)gameloft.com/scripts url script-response-body https://raw.githubusercontent.com/xudazhu1/QuantumultX-/main/as8.js
-^https:([\S\s]*?)gameloft.com/profiles/me/myprofile url script-response-body https://raw.githubusercontent.com/xudazhu1/QuantumultX-/main/as8.js
+^https:([\S\s]*?)gameloft.com/scripts url script-response-body https://raw.githubusercontent.com/JaraxW/AS8/main/A8.js
+^https:([\S\s]*?)gameloft.com/profiles/me/myprofile url script-response-body https://raw.githubusercontent.com/JaraxW/AS8/main/A8.js
 
-# ! ^https://iap-eur.gameloft.com/inapp_crm/index.php url script-response-body http://192.168.8.229:8088/as8.js
-#! ^https:([\S\s]*?)gameloft.com/authorize url script-request-body http://192.168.8.229:8088/as8.js
+# ! ^https://iap-eur.gameloft.com/inapp_crm/index.php url script-response-body http://192.168.8.229:8088/A8.js
+#! ^https:([\S\s]*?)gameloft.com/authorize url script-request-body http://192.168.8.229:8088/A8.js
 #! 下面是去广告
 #! ^https://web.facebook.com/adnw_sync2 url reject
 #! ^https:([\S\s]*?)unityads.unity3d.com url reject
@@ -100,7 +100,7 @@ if (me.test($request.url) ) {
 	// 320,321,322,323,324,325,326,327,328,329,330,331,332,333,334,335,336,337,338,339
 	let qu2 = [];
 
-	for (let i = 1; i <= 398; i++) {
+	for (let i = 1; i <= 399; i++) {
 		if (qu.includes(i) || qu2.includes(i)) {
 			continue;
 		}
@@ -316,7 +316,7 @@ if (sync.test($request.url) || script_g.test($request.url) ) {
         // 320,321,322,323,324,325,326,327,328,329,330,331,332,333,334,335,336,337,338,339
         let qu2 = [];
 
-        for (let i = 1; i <= 393; i++) {
+        for (let i = 1; i <= 399; i++) {
             if (qu.includes(i) || qu2.includes(i)) {
                 continue;
             }
