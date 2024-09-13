@@ -50,11 +50,11 @@ if (!body.data) {
         } else {
             body.data.bottom = body.data.bottom.filter(item => {
                 if (item.name === '发布') {
-                    //console.log('去除发布');
-                    return false;
+                    console.log('去除发布');
+                    return true;
                 } else if (item.name === '会员购' || item.tab_id === '会员购Bottom') {
-                    //console.log('去除会员购');
-                    return false;
+                    console.log('去除会员购');
+                    return true;
                 }
                 return true;
             });
