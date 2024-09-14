@@ -169,6 +169,9 @@ if (sync.test($request.url) || script_g.test($request.url)) {
         let body = res;
         let timestamp = Math.floor((new Date().getTime() + 1000 * 60 * 60 * 24 * 364) / 1000);
 
+        // 先删除违规信息
+        body["body"]["infractions_sync"]["body"]["infractions"] = "";
+
         // 车辆升级的处理
         let cars = [];
         let cars_parts = {};
@@ -206,7 +209,6 @@ if (sync.test($request.url) || script_g.test($request.url)) {
                 "sync_key": "1712288961"
             }
         };
-        body["body"]["infractions_sync"]["body"]["infractions"] = "";
         body["body"]["boosters_sync"]["body"]["active"] = {
             "extra_tank": { "min": timestamp },
             "performance": { "min": timestamp },
