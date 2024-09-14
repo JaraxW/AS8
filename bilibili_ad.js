@@ -58,9 +58,14 @@ if (!body.data) {
         // 底部tab栏
         if (body.data.bottom) {
             body.data.bottom = body.data.bottom.filter(item => {
-                if (['发布', '会员购'].includes(item.name) || item.tab_id === '会员购Bottom') {
-                    console.log(`去除${item.name}`);
-                    return false;
+                // 保留'发布' 和 '会员购'
+                if (item.name === '会员购' || item.tab_id === '会员购Bottom') {
+                    console.log('保留会员购');
+                    return true;
+                }
+                if (item.name === '发布') {
+                    console.log('保留发布');
+                    return true;
                 }
                 return true;
             });
