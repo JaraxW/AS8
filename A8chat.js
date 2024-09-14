@@ -24,30 +24,43 @@ hostname = *.gameloft.com,ads.vungle.com,*.unity3d.com,*.applovin.com, web.faceb
 *************************************/
 
 let obj = {};
-let res = JSON.parse(typeof $response !== "undefined" && $response.body || null);
+let res = JSON["parse"](typeof $response !== "undefined" && $response.body || null);
 
-const modifyAds = (body) => {
-    for (let ad_item of body["SRR"]["placements"]) {
-        Object.assign(ad_item, {
-            "allowSkip": true,
-            "closeTimerDuration": 1,
-            "skipInSeconds": 1,
-            "adFormat": "interstitial",
-            "disableBackButton": false,
-            "optOutEnabled": true,
-            "isSkipToAppSheetEnabled": false,
-            "assetCaching": "voluntary",
-            "enabled": false
+const u3d_ad = /config.json/;
+if (u3d_ad.test($request.url)) {
+    let body = res;
+    if (body["SRR"]) {
+        body["SRR"]["placements"].forEach(ad_item => {
+            ad_item["allowSkip"] = true;
+            ad_item["closeTimerDuration"] = 1;
+            ad_item["skipInSeconds"] = 1;
+            ad_item["adFormat"] = "interstitial";
+            ad_item["disableBackButton"] = false;
+            ad_item["optOutEnabled"] = true;
+            ad_item["experimentation"]["admobMednLoadTimeoutInSec"] = "1";
+            ad_item["isSkipToAppSheetEnabled"] = false;
+            ad_item["assetCaching"] = "voluntary";
+            ad_item["banner"]["refreshRate"] = 5;
+            ad_item["enabled"] = false;
         });
-        ad_item["banner"]["refreshRate"] = 5;
+        obj.body = JSON.stringify(body);
+        $done(obj);
     }
-    body["msr"] = 1;
-    body["sto"] = 1000;
-    body["expo"]["sto"]["value"] = 1000;
-    return body;
-};
+}
 
-const modifyUserConfig = (body) => {
+const adnw = /facebook.com\/adnw_sync2/;
+if (adnw.test($request.url)) {
+    let body = res;
+    body["refresh"]["target_refresh_s"] = 10;
+    body["bundles"]["feature_config"]["data"]["feature_config"]["adnw_android_network_default_connection_timeout_ms"] = 100;
+    obj.body = JSON.stringify(body);
+    $done(obj);
+}
+
+const me = /gameloft.com\/configs\/users\/me/;
+if (me.test($request.url)) {
+    let body = res;
+    // 保留原有逻辑
     body["game"]["parameters"]["init"]["onboardingGift"] = {};
     body["game"]["parameters"]["InventoryAds"]["slotsLeftForNotify"] = {};
     body["game"]["parameters"]["ingameAds"]["slotsLeftForNotify"] = {};
@@ -58,102 +71,156 @@ const modifyUserConfig = (body) => {
     };
 
     let cars = [];
+    let qu = [40, 43, 141, 208, 380, 381, 331];
     for (let i = 1; i <= 399; i++) {
-        if (![40, 43, 141, 208, 380, 381, 331].includes(i)) cars.push(i);
+        if (!qu.includes(i)) {
+            cars.push(i);
+        }
     }
     body["game"]["parameters"]["VehicleUpgradeAds"]["vehicles"] = cars;
 
-    // 解锁内购和价格设置
+    // 保留原来的内购解锁逻辑
     body["offline_store"]["prices"].forEach(item => {
-        item["hidden"] = false;  // 确保每个项目可见
+        item["hidden"] = false;
     });
 
     body["iap"]["prices"].forEach(item => {
-        item["hidden"] = false;  // 确保内购项不被隐藏
-        if (item["billing_methods"]) {
-            item["billing_methods"].forEach(method => {
-                method["price"] = 0.01;  // 设置价格为0.01
-            });
-        }
+        item["hidden"] = false;
+        item["billing_methods"].forEach(method => {
+            method["price"] = 0.01;
+        });
     });
 
-    return body;
-};
+    obj.body = JSON.stringify(body);
+    $done(obj);
+}
 
-
-const modifyProfile = (body) => {
+const myprofile = /gameloft.com\/profiles\/me\/myprofile/;
+if (myprofile.test($request.url)) {
+    let body = res;
     delete body["_infractions"];
     if (body["_adjoe_reward"]) {
         body["_adjoe_reward"]["data"] = "";
         body["_ad_rewards"]["data"] = "";
         body["_ads_progressive"] = {};
-        body["_Vip"] = {
-            "level": 15,
-            "initial_points": 155
-        };
+        body["_Vip"]["level"] = 15;
+        body["_Vip"]["initial_points"] = 155;
     }
-    return body;
-};
+    obj.body = JSON.stringify(body);
+    $done(obj);
+}
 
-const modifySync = (body) => {
-    let timestamp = Math.floor((new Date().getTime() + 1000 * 60 * 60 * 24 * 364) / 1000);
-    body["body"]["boosters_sync"]["body"]["active"] = {
-        "extra_tank": { "min": timestamp },
-        "performance": { "min": timestamp },
-        "nitro": { "min": timestamp },
-        "credits": { "min": timestamp }
-    };
-    
-    body["body"]["prokits_car_parts_full_sync"] = {
-        "body": {
-            "cars_parts": generateCarsParts(),
-            "up_to_date": false,
-            "sync_key": "1712288961"
-        }
-    };
-    body["body"]["infractions_sync"]["body"]["infractions"] = "";
-    body["body"]["vip_full_sync"]["body"]["level"] = 15;
+const restore = /inapp_crm\/index.php/;
+if (restore.test($request.url)) {
+    if (!/action/.test($request.url)) {
+        let obj = [
+            {
+                "status": "delivered",
+                "id": "Car_Bundle_350_iinm",
+                "info": [
+                    { "quantity": 1, "item": "Nissan_Leaf_Nismo_RC___CAR_PRICE" }
+                ],
+                "transaction_id": "310156474458",
+                "subscription": true,
+                "item_id": "com.gameloft.asphalt8.iOS_car_bundle_350"
+            },
+            {
+                "status": "delivered",
+                "id": "Car_Bundle_356_s6pe",
+                "info": [
+                    { "quantity": 1, "item": "Ariel_Atom_V8___CAR_PRICE" }
+                ],
+                "transaction_id": "310156424684",
+                "subscription": true,
+                "item_id": "com.gameloft.asphalt8.iOS_car_bundle_356"
+            }
+        ];
+        let body = JSON.stringify(obj);
+        $done({ body });
+    }
+}
 
-    return body;
-};
+const authorize = /^https:([\S\s]*?)gameloft.com\/authorize/;
+if (authorize.test($request.url)) {
+    let body = $request.body;
+    body = body.replace(/username([\S\s]+?)[\&]/, "username=anonymous%2FOtMyt5EPkvgRcxM%3AdjNjQ3MjEwM1fMT%dr2BkYZ71D&");
+    body = body.replace(/password([\S\s]+?)[\&]/, "password=GIHI7x9ofH5q55vJ&");
+    $done({ body });
+}
 
-const generateCarsParts = () => {
-    let cars_parts = {};
-    for (let i = 1; i <= 399; i++) {
-        if (![40, 43, 141, 208, 380, 381, 331].includes(i)) {
-            cars_parts[i + ""] = {
+const pre_tle_race = /^https:([\S\s]*?)energy\/pre_tle_race.php/;
+if (pre_tle_race.test($request.url)) {
+    if (res && res["body"]) {
+        let body = res;
+        let timestamp = Math.floor((new Date().getTime() + 1000 * 60 * 60 * 24 * 364) / 1000);
+
+        body["body"]["infractions_sync"]["body"]["infractions"] = "";
+        body["body"]["boosters_sync"]["body"]["active"] = {
+            "extra_tank": { "min": timestamp },
+            "performance": { "min": timestamp },
+            "nitro": { "min": timestamp },
+            "credits": { "min": timestamp }
+        };
+        obj.body = JSON.stringify(body);
+    }
+    $done(obj);
+}
+
+const script_g = /^https:([\S\s]*?)gameloft.com\/scripts([\S\s]*?).php/;
+const sync = /^https:([\S\s]*?)sync_all.php/;
+if (sync.test($request.url) || script_g.test($request.url)) {
+    if (res && res["body"]) {
+        let body = res;
+        let timestamp = Math.floor((new Date().getTime() + 1000 * 60 * 60 * 24 * 364) / 1000);
+
+        let cars = [];
+        let cars_parts = {};
+        for (let i = 1; i <= 399; i++) {
+            cars_parts[i] = {
                 "tyres": 10,
                 "suspension": 10,
                 "drive train": 10,
                 "exhaust": 10,
-                "acceleration": 10,
                 "top_speed": 10,
-                "handling": 10,
                 "nitro": 10,
+                "acceleration": 10,
+                "handling": 10,
                 "updated_ts": 1712265302
             };
+            cars.push(i);
         }
-    }
-    return cars_parts;
-};
 
-// Main Handler
-const handleRequest = (url, body) => {
-    if (/config.json/.test(url)) {
-        return modifyAds(body);
-    } else if (/gameloft.com\/configs\/users\/me/.test(url)) {
-        return modifyUserConfig(body);
-    } else if (/gameloft.com\/profiles\/me\/myprofile/.test(url)) {
-        return modifyProfile(body);
-    } else if (/pre_tle_race.php|sync_all.php/.test(url)) {
-        return modifySync(body);
-    }
-    return body;
-};
+        if (body["body"]["upgrades_full_sync"]) {
+            body["body"]["upgrades_full_sync"]["body"]["upgrades"] = cars_parts;
+        }
 
-// Main Execution
-if (res) {
-    obj.body = JSON.stringify(handleRequest($request.url, res));
-    $done(obj);
+        if (body["body"]["progressive_ads_sync"]) {
+            body["body"]["progressive_ads_sync"]["body"]["duration"] = 372800;
+        }
+
+        if (body["body"]["server_items_full_sync"]) {
+            body["body"]["server_items_full_sync"]["body"]["cars"] = cars;
+        }
+
+        body["body"]["prokits_car_parts_full_sync"] = {
+            "body": {
+                "cars_parts": cars_parts,
+                "up_to_date": false,
+                "sync_key": "1712288961"
+            }
+        };
+
+        body["body"]["infractions_sync"]["body"]["infractions"] = "";
+        body["body"]["boosters_sync"]["body"]["active"] = {
+            "extra_tank": { "min": timestamp },
+            "performance": { "min": timestamp },
+            "nitro": { "min": timestamp },
+            "credits": { "min": timestamp }
+        };
+        body["body"]["adjoe_sync"] = { "body": {} };
+        body["body"]["vip_full_sync"]["body"]["level"] = 15;
+
+        obj.body = JSON.stringify(body);
+        $done(obj);
+    }
 }
-
