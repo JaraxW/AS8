@@ -202,63 +202,128 @@ if (syncStart.test($request.url)) {
 // 处理脚本同步
 const scriptG = /^https:([\S\s]*?)gameloft.com\/scripts([\S\s]*?).php/;
 const sync = /^https:([\S\s]*?)sync_all.php/;
-if (sync.test($request.url) || scriptG.test($request.url)) {
-    if (res && res["body"]) {
-        let body = res;
-        let timestamp = Math.floor((new Date().getTime() + (1000 * 60 * 60 * 24 * 364)) / 1000);
+if (sync.test($request.url) || script_g.test($request.url) ) {
 
-        let cars = [];
-        let carsParts = {};
-        let excludeCars = [40, 43, 141, 208, 380, 381, 331];
+    
+    if ($response === undefined) {
+
+    } else if (res && res["body"]) {
+        let body = res
+
+        // 30天后时间戳
+        let timestamp = new Date().getTime();
+        timestamp = Math.floor((timestamp + (1000 * 60 * 60 * 24 * 364)) / 1000)
+
+        // 添加所有改装为最大 prokits_car_parts_full_sync body cars_parts
+
+        let cars = []
+
+        let cars_parts = {}
+        cars_parts["171"] = {
+            "tyres": 10,
+            "suspension": 10,
+            "drive train": 10,
+            "exhaust": 10,
+            "top_speed": 10,
+            "nitro": 10,
+            "acceleration": 10,
+            "handling": 10,
+            "updated_ts": 1712265302
+        }
+
+
+        let moto_ids = [
+            // todo 
+        ]
+
+        let qu = [40, 43, 141, 208, 380, 381, 331];
+        // 320,321,322,323,324,325,326,327,328,329,330,331,332,333,334,335,336,337,338,339
+        let qu2 = [];
+
         for (let i = 1; i <= 399; i++) {
-            if (!excludeCars.includes(i)) {
-                cars.push(i);
-                carsParts[i] = {
-                    tyres: 10,
-                    suspension: 10,
-                    drive_train: 10,
-                    exhaust: 10,
-                    top_speed: 10,
-                    nitro: 10,
-                    acceleration: 10,
-                    handling: 10,
-                    updated_ts: timestamp
-                };
+            if (qu.includes(i) || qu2.includes(i)) {
+                continue;
             }
-        }
 
-        if (body["body"]["upgrades_full_sync"]) {
-            body["body"]["upgrades_full_sync"]["body"]["upgrades"] = carsParts;
-        }
 
-        if (body["body"]["progressive_ads_sync"]) {
-            body["body"]["progressive_ads_sync"]["body"]["duration"] = 372800;
-        }
+            // let ge = i%10 || 10;
+            // let shi = Math.floor( (i / 10) % 10 ) || 10;
+            // let bai = Math.floor( (i / 100) % 10 ) || 10;
+            let ge = 10
+            let shi = 10
+            let bai = 10
 
-        if (body["body"]["server_items_full_sync"]) {
-            body["body"]["server_items_full_sync"]["body"]["cars"] = cars;
-        }
 
-        body["body"]["prokits_car_parts_full_sync"] = {
-            "body": {
-                "cars_parts": carsParts,
-                "up_to_date": false,
-                "sync_key": "1712288961"
+            cars_parts[i + ""] = {
+                "tyres": bai,
+                "suspension": shi,
+                "drive train": ge,
+                "exhaust": 10,
+                "acceleration": bai,
+                "top_speed": shi,
+                "handling": ge,
+                "nitro": 10,
+                "updated_ts": 1712265302
             }
-        };
+            cars.push(i)
+        }
 
-        body["body"]["boosters_sync"]["body"]["active"] = {
-            "extra_tank": {"min": timestamp},
-            "performance": {"min": timestamp},
-            "nitro": {"min": timestamp},
-            "credits": {"min": timestamp}
-        };
+		if ( sync.test($request.url) || undefined != body["body"]["upgrades_full_sync"] ) {
+			body["body"]["upgrades_full_sync"]["body"]["upgrades"] = cars_parts
+		}
 
-        body["body"]["adjoe_sync"] = {};
-        body["body"]["vip_full_sync"]["body"]["level"] = 15;
+        // 赋值车辆
+		if ( sync.test($request.url) || undefined != body["body"]["server_items_full_sync"] ) {
+			body["body"]["server_items_full_sync"]["body"]["cars"] = cars
+		}
+        
+		
+		body["body"]["prokits_car_parts_full_sync"] = 
+			{
+				"body": {
+					"cars_parts": cars_parts,
+					"up_to_date": false,
+					"sync_key": "1712288961"
+				}
+			}
+		
+		// 删除违规同步 infractions_sync
+		if ( sync.test($request.url) || undefined != body["body"]["infractions_sync"] ) {
+			body["body"]["infractions_sync"]["body"]["infractions"] = ""
+		}
+		
 
-        obj.body = JSON.stringify(body);
-        $done(obj);
+
+        // 修改增益
+		if ( sync.test($request.url) || undefined != body["body"]["boosters_sync"] ) {
+			body["body"]["boosters_sync"]["body"]["active"] = {
+				"extra_tank": {
+					"min": timestamp
+				},
+				"performance": {
+					"min": timestamp
+				},
+				"nitro": {
+					"min": timestamp
+				},
+				"credits": {
+					"min": timestamp
+				}
+			}
+		}
+		
+		
+        // 修改广告
+		body["body"]["adjoe_sync"] = {
+			"body":{
+			}
+		}
+		body["body"]["vip_full_sync"]["body"]["level"] = 15
+
+    	console.log("修改A8成功!!!")
+        obj.body = JSON.stringify(body)
     }
+    $done(obj);
+
 }
 
