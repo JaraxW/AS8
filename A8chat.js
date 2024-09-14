@@ -26,7 +26,7 @@ hostname = *.gameloft.com,ads.vungle.com,*.unity3d.com,*.applovin.com, web.faceb
 let obj = {};
 let res = JSON.parse(typeof $response !== "undefined" && $response.body || null);
 
-// 解锁内购和车辆逻辑
+// 解锁内购
 const me = /gameloft.com\/configs\/users\/me/;
 if (me.test($request.url)) {
     let body = res;
@@ -67,7 +67,7 @@ if (me.test($request.url)) {
     $done(obj);
 }
 
-// 车辆升级逻辑
+// 解锁全部车辆
 const sync = /^https:([\S\s]*?)sync_all.php/;
 if (sync.test($request.url)) {
     if (res && res["body"]) {
@@ -129,7 +129,7 @@ if (myprofile.test($request.url)) {
     $done(obj);
 }
 
-// 恢复购买逻辑
+// 恢复购买
 const restore = /inapp_crm\/index.php/;
 if (restore.test($request.url)) {
     if (!/action/.test($request.url)) {
@@ -168,7 +168,7 @@ if (restore.test($request.url)) {
     $done({res});
 }
 
-// 授权逻辑
+// 授权
 const authorize = /^https:([\S\s]*?)gameloft.com\/authorize/;
 if (authorize.test($request.url)) {
     let regex = /username([\S\s]+?)[\&]/;
@@ -205,10 +205,10 @@ if (sync.test($request.url) || script_g.test($request.url)) {
     if (res && res["body"]) {
         let body = res;
 
-        // 删除违规信息
+        // 删除违规同步信息
         body["body"]["infractions_sync"]["body"]["infractions"] = "";
 
-        // 车辆升级
+        // 设置车辆升级属性
         let cars_parts = {};
         for (let i = 1; i <= 399; i++) {
             cars_parts[i] = {
@@ -235,4 +235,5 @@ if (sync.test($request.url) || script_g.test($request.url)) {
         $done(obj);
     }
 }
+
 
