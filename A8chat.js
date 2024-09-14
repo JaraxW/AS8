@@ -162,7 +162,7 @@ if (pre_tle_race.test($request.url)) {
 		};
 		
 		// 无限extra_tank、performance、nitro
-		body["body"]["boosters_sync"]["body"]["inventory"] = {
+		body["body"]["boosters_sync"] = {
 			"extra_tank": 999999,
 			"performance": 999999,
 			"nitro": 999999
