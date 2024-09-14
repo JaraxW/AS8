@@ -29,6 +29,12 @@ hostname = *.gameloft.com,ads.vungle.com,*.unity3d.com,*.applovin.com, web.faceb
 author：xdz1
 
 **************************************/
+/*************************************
+
+项目名称：**********
+author：xdz1
+
+**************************************/
 let obj = {};
 let res = JSON.parse($response ? $response.body : null);
 
@@ -256,3 +262,4 @@ if (sync.test($request.url) || scriptG.test($request.url)) {
         $done(obj);
     }
 }
+
