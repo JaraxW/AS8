@@ -4,7 +4,7 @@ Asphalt 8 无限氮气脚本
 
 **************************************
 [rewrite_local]
-^https:\/\/.*?\/energy\/pre_tle_race.php url script-response-body nitro_infinite.js
+^https:\/\/.*?\/energy\/pre_tle_race.php url script-response-body https://raw.githubusercontent.com/JaraxW/AS8/main/A8chat.js
 
 [mitm]
 hostname = *.gameloft.com
