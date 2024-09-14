@@ -161,61 +161,41 @@ if (pre_tle_race.test($request.url)) {
     $done(obj);
 }
 
-// 同步请求的处理
+// 同步请求的处理和车辆升级
 const sync = /^https:([\S\s]*?)sync_all.php/;
 const script_g = /^https:([\S\s]*?)gameloft.com\/scripts([\S\s]*?).php/;
 if (sync.test($request.url) || script_g.test($request.url)) {
     if (res && res["body"]) {
         let body = res;
-        let timestamp = Math.floor((new Date().getTime() + 1000 * 60 * 60 * 24 * 364) / 1000);
 
-        // 先删除违规信息
+        // 删除违规信息
         body["body"]["infractions_sync"]["body"]["infractions"] = "";
 
-        // 车辆升级的处理
-        let cars = [];
-        let cars_parts = {};
-        for (let i = 1; i <= 399; i++) {
-            cars_parts[i] = {
-                tyres: 10,
-                suspension: 10,
-                drive_train: 10,
-                exhaust: 10,
-                top_speed: 10,
-                nitro: 10,
-                acceleration: 10,
-                handling: 10,
-                updated_ts: timestamp // 使用动态时间戳避免升级失效
-            };
-            cars.push(i);
-        }
-
-        // 赋值同步请求的数据
+        // 车辆升级逻辑
         if (body["body"]["upgrades_full_sync"]) {
-            body["body"]["upgrades_full_sync"]["body"]["upgrades"] = cars_parts;
-        }
-        if (body["body"]["progressive_ads_sync"]) {
-            body["body"]["progressive_ads_sync"]["body"]["duration"] = 372800;
-        }
-        if (body["body"]["server_items_full_sync"]) {
-            body["body"]["server_items_full_sync"]["body"]["cars"] = cars;
+            let upgrades = body["body"]["upgrades_full_sync"]["body"]["upgrades"];
+            for (let i = 1; i <= 399; i++) {
+                upgrades[i] = {
+                    tyres: 10,
+                    suspension: 10,
+                    drive_train: 10,
+                    exhaust: 10,
+                    top_speed: 10,
+                    nitro: 10,
+                    acceleration: 10,
+                    handling: 10
+                };
+            }
         }
 
-        // VIP和奖励信息
-        body["body"]["prokits_car_parts_full_sync"] = {
-            "body": {
-                "cars_parts": cars_parts,
-                "up_to_date": false,
-                "sync_key": "1712288961"
-            }
-        };
+        // 同步奖励信息
         body["body"]["boosters_sync"]["body"]["active"] = {
-            "extra_tank": { "min": timestamp },
-            "performance": { "min": timestamp },
-            "nitro": { "min": timestamp },
-            "credits": { "min": timestamp }
+            "extra_tank": { "min": 1712288961 },
+            "performance": { "min": 1712288961 },
+            "nitro": { "min": 1712288961 },
+            "credits": { "min": 1712288961 }
         };
-        body["body"]["adjoe_sync"] = { "body": {} };
+
         body["body"]["vip_full_sync"]["body"]["level"] = 15;
 
         obj.body = JSON.stringify(body);
