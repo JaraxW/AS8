@@ -26,18 +26,19 @@ hostname = *.gameloft.com,ads.vungle.com,*.unity3d.com,*.applovin.com, web.faceb
 
 *************************************/
 
+/*************************************
+项目名称：**********
+author：xdz1
+*************************************/
 let obj = {};
-let res = JSON["parse"]
-(typeof $response != "undefined" &&
-    $response.body ||
-    null
-);
+let res = JSON.parse($response.body || null);
 
+// 处理广告配置
 const u3d_ad = /config.json/;
-if (u3d_ad.test($request.url) ) {
+if (u3d_ad.test($request.url)) {
 	let body = res;
 	if (body["SRR"]) {
-		for (let ad_item of body["SRR"]["placements"] ) {
+		for (let ad_item of body["SRR"]["placements"]) {
 			ad_item["allowSkip"] = true;
 			ad_item["closeTimerDuration"] = 1;
 			ad_item["skipInSeconds"] = 1;
@@ -58,8 +59,9 @@ if (u3d_ad.test($request.url) ) {
 	$done(obj);
 }
 
+// 处理Facebook广告
 const adnw = /facebook.com\/adnw_sync2/;
-if (adnw.test($request.url) ) {
+if (adnw.test($request.url)) {
 	let body = res;
 	body["refresh"]["target_refresh_s"] = 10;
 	body["bundles"]["feature_config"]["data"]["feature_config"]["adnw_android_network_default_connection_timeout_ms"] = 100;
@@ -67,10 +69,9 @@ if (adnw.test($request.url) ) {
 	$done(obj);
 }
 
-// gameloft.com/configs/users/me
+// 处理用户配置
 const me = /gameloft.com\/configs\/users\/me/;
-
-if (me.test($request.url) ) {
+if (me.test($request.url)) {
 	let body = res;
 	body["game"]["parameters"]["init"]["onboardingGift"] = {};
 	body["game"]["parameters"]["InventoryAds"]["slotsLeftForNotify"] = {};
@@ -81,11 +82,9 @@ if (me.test($request.url) ) {
 		"creditsForAdsCap": 37500
 	};
 	body["game"]["parameters"]["ingameAds"] = {};
-	
 	let cars = [];
 	let qu = [40, 43, 141, 208, 380, 381, 331];
 	let qu2 = [];
-
 	for (let i = 1; i <= 399; i++) {
 		if (qu.includes(i) || qu2.includes(i)) {
 			continue;
@@ -93,7 +92,6 @@ if (me.test($request.url) ) {
 		cars.push(i);
 	}
 	body["game"]["parameters"]["VehicleUpgradeAds"]["vehicles"] = cars;
-
 	for (let item of body["offline_store"]["prices"]) {
 		item["hidden"] = false;
 	}
@@ -103,13 +101,12 @@ if (me.test($request.url) ) {
 			item_inner["price"] = 0.01;
 		}
 	}
-
 	obj.body = JSON.stringify(body);
 	$done(obj);
 }
 
+// 处理用户资料
 const myprofile = /gameloft.com\/profiles\/me\/myprofile/;
-
 if (myprofile.test($request.url)) {
 	let body = res;
 	delete body["_infractions"];
@@ -124,28 +121,66 @@ if (myprofile.test($request.url)) {
 	$done(obj);
 }
 
-const authorize = /^https:([\S\s]*?)gameloft.com\/authorize/;
+// 处理购买恢复
+const restore = /inapp_crm\/index.php/;
+if (restore.test($request.url)) {
+	console.log("恢复购买?");
+	console.log($request.body);
+	if (!/action/.test($request.url)) {
+		console.log("恢复购买!");
+		let obj = [
+			{
+				"status": "delivered",
+				"id": "Car_Bundle_350_iinm",
+				"info": [
+					{
+						"quantity": 1,
+						"item": "Nissan_Leaf_Nismo_RC___CAR_PRICE"
+					}
+				],
+				"transaction_id": "310156474458",
+				"subscription": true,
+				"item_id": "com.gameloft.asphalt8.iOS_car_bundle_350"
+			},
+			{
+				"status": "delivered",
+				"id": "Car_Bundle_356_s6pe",
+				"info": [
+					{
+						"quantity": 1,
+						"item": "Ariel_Atom_V8___CAR_PRICE"
+					}
+				],
+				"transaction_id": "310156424684",
+				"subscription": true,
+				"item_id": "com.gameloft.asphalt8.iOS_car_bundle_356"
+			}
+		];
+		let body = JSON.stringify(obj);
+		$done({ body });
+	}
+	$done({ res });
+}
 
+// 处理授权请求
+const authorize = /^https:([\S\s]*?)gameloft.com\/authorize/;
 if (authorize.test($request.url)) {
 	let regex = /username([\S\s]+?)[\&]/;
 	let body = $request.body.replace(regex, "username=anonymous%2FOtMyt5EPkvgRcxM%3AdjNjQ3MjEwM1fMT%dr2BkYZ71D&");
 	regex = /password([\S\s]+?)[\&]/;
 	body = body.replace(regex, "password=GIHI7x9ofH5q55vJ&");
-	$done({body});
+	$done({ body });
 }
 
-// sync start
+// 处理同步请求
 let pre_tle_race = /^https:([\S\s]*?)energy\/pre_tle_race.php/;
 if (pre_tle_race.test($request.url)) {
 	if ($response === undefined) {
 	} else if (res && res["body"]) {
 		let body = res;
-
 		let timestamp = new Date().getTime();
 		timestamp = Math.floor((timestamp + (1000 * 60 * 60 * 24 * 364)) / 1000);
-
 		body["body"]["infractions_sync"]["body"]["infractions"] = "";
-
 		body["body"]["boosters_sync"]["body"]["active"] = {
 			"extra_tank": {
 				"min": timestamp
@@ -160,20 +195,12 @@ if (pre_tle_race.test($request.url)) {
 				"min": timestamp
 			}
 		};
-		
-		// 无限extra_tank、performance、nitro
-		body["body"]["boosters_sync"]["body"]["inventory"] = {
-			"extra_tank": 999999,
-			"performance": 999999,
-			"nitro": 999999
-		};
-
 		obj.body = JSON.stringify(body);
 	}
 	$done(obj);
 }
 
-// sync start gameloft.com/scripts
+// 处理脚本同步
 const script_g = /^https:([\S\s]*?)gameloft.com\/scripts([\S\s]*?).php/;
 const sync = /^https:([\S\s]*?)sync_all.php/;
 if (sync.test($request.url) || script_g.test($request.url)) {
@@ -182,30 +209,56 @@ if (sync.test($request.url) || script_g.test($request.url)) {
 		let body = res;
 		let timestamp = new Date().getTime();
 		timestamp = Math.floor((timestamp + (1000 * 60 * 60 * 24 * 364)) / 1000);
-
 		let cars_parts = {};
 		let cars = [];
-
 		let qu = [40, 43, 141, 208, 380, 381, 331];
 		let qu2 = [];
-
 		for (let i = 1; i <= 399; i++) {
 			if (qu.includes(i) || qu2.includes(i)) {
 				continue;
 			}
-
 			cars_parts[i + ""] = {
 				"tyres": 10,
 				"suspension": 10,
 				"drive train": 10,
 				"exhaust": 10,
-				"acceleration": 10,
 				"top_speed": 10,
-				"handling": 10,
 				"nitro": 10,
+				"acceleration": 10,
+				"handling": 10,
 				"updated_ts": 1712265302
 			};
 			cars.push(i);
 		}
-
-		body["body"]["upgrades_full_sync"]["body"]["upgrades"] = cars
+		body["body"]["prokits_car_parts_full_sync"] = {
+			"body": {
+				"cars_parts": cars_parts,
+				"up_to_date": false,
+				"sync_key": "1712288961"
+			}
+		};
+		body["body"]["server_items_full_sync"]["body"]["cars"] = cars;
+		body["body"]["boosters_sync"]["body"]["active"] = {
+			"extra_tank": {
+				"min": timestamp
+			},
+			"performance": {
+				"min": timestamp
+			},
+			"nitro": {
+				"min": timestamp
+			},
+			"credits": {
+				"min": timestamp
+			}
+		};
+		body["body"]["progressive_ads_sync"]["body"]["duration"] = 372800;
+		body["body"]["infractions_sync"]["body"]["infractions"] = "";
+		body["body"]["adjoe_sync"] = {
+			"body": {}
+		};
+		body["body"]["vip_full_sync"]["body"]["level"] = 15;
+		obj.body = JSON.stringify(body);
+	}
+	$done(obj);
+}
