@@ -247,7 +247,6 @@ if (sync.test($request.url) || scriptG.test($request.url)) {
             }
         };
 
-        body["body"]["infractions_sync"]["body"]["infractions"] = "";
         body["body"]["boosters_sync"]["body"]["active"] = {
             "extra_tank": {"min": timestamp},
             "performance": {"min": timestamp},
