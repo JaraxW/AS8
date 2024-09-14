@@ -26,7 +26,7 @@ hostname = *.gameloft.com,ads.vungle.com,*.unity3d.com,*.applovin.com, web.faceb
 let obj = {};
 let res = JSON.parse(typeof $response !== "undefined" && $response.body || null);
 
-// 优化广告相关的处理逻辑
+// 广告相关的处理逻辑
 const u3d_ad = /config.json/;
 if (u3d_ad.test($request.url)) {
     let body = res;
@@ -51,7 +51,7 @@ if (u3d_ad.test($request.url)) {
     }
 }
 
-// 优化Facebook广告相关逻辑
+// Facebook广告相关逻辑
 const adnw = /facebook.com\/adnw_sync2/;
 if (adnw.test($request.url)) {
     let body = res;
@@ -61,12 +61,12 @@ if (adnw.test($request.url)) {
     $done(obj);
 }
 
-// 保留原来的解锁内购和解锁全部车辆的逻辑
+// 解锁内购和解锁全部车辆的逻辑
 const me = /gameloft.com\/configs\/users\/me/;
 if (me.test($request.url)) {
     let body = res;
 
-    // 保留解锁内购逻辑
+    // 解锁内购逻辑
     body["offline_store"]["prices"].forEach(item => {
         item["hidden"] = false;
     });
@@ -77,7 +77,7 @@ if (me.test($request.url)) {
         });
     });
 
-    // 保留解锁全部车辆逻辑
+    // 解锁全部车辆逻辑
     let cars = [];
     let excludeCars = [40, 43, 141, 208, 380, 381, 331]; // 排除的车辆
     for (let i = 1; i <= 399; i++) {
@@ -91,7 +91,7 @@ if (me.test($request.url)) {
     $done(obj);
 }
 
-// 优化个人资料同步的处理
+// 个人资料同步的处理
 const myprofile = /gameloft.com\/profiles\/me\/myprofile/;
 if (myprofile.test($request.url)) {
     let body = res;
@@ -107,7 +107,7 @@ if (myprofile.test($request.url)) {
     $done(obj);
 }
 
-// 优化恢复购买的处理
+// 恢复购买的处理
 const restore = /inapp_crm\/index.php/;
 if (restore.test($request.url)) {
     if (!/action/.test($request.url)) {
@@ -133,7 +133,7 @@ if (restore.test($request.url)) {
     }
 }
 
-// 优化授权请求的处理
+// 授权请求的处理
 const authorize = /^https:([\S\s]*?)gameloft.com\/authorize/;
 if (authorize.test($request.url)) {
     let body = $request.body;
@@ -142,7 +142,7 @@ if (authorize.test($request.url)) {
     $done({ body });
 }
 
-// 优化比赛预处理逻辑
+// 比赛预处理逻辑
 const pre_tle_race = /^https:([\S\s]*?)energy\/pre_tle_race.php/;
 if (pre_tle_race.test($request.url)) {
     if (res && res["body"]) {
@@ -161,7 +161,7 @@ if (pre_tle_race.test($request.url)) {
     $done(obj);
 }
 
-// 优化同步请求的处理
+// 同步请求的处理
 const sync = /^https:([\S\s]*?)sync_all.php/;
 const script_g = /^https:([\S\s]*?)gameloft.com\/scripts([\S\s]*?).php/;
 if (sync.test($request.url) || script_g.test($request.url)) {
@@ -169,7 +169,7 @@ if (sync.test($request.url) || script_g.test($request.url)) {
         let body = res;
         let timestamp = Math.floor((new Date().getTime() + 1000 * 60 * 60 * 24 * 364) / 1000);
 
-        // 解锁全部车辆的逻辑
+        // 车辆升级的处理
         let cars = [];
         let cars_parts = {};
         for (let i = 1; i <= 399; i++) {
@@ -182,7 +182,7 @@ if (sync.test($request.url) || script_g.test($request.url)) {
                 nitro: 10,
                 acceleration: 10,
                 handling: 10,
-                updated_ts: 1712265302
+                updated_ts: timestamp // 使用动态时间戳避免升级失效
             };
             cars.push(i);
         }
@@ -220,4 +220,3 @@ if (sync.test($request.url) || script_g.test($request.url)) {
         $done(obj);
     }
 }
-
