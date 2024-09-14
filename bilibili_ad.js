@@ -1,39 +1,47 @@
 const url = $request.url;
 const method = $request.method;
 const notifyTitle = "bilibili-json";
+const responseBody = $response.body || '';  // 缓存response body
+
 console.log(`b站json-2023.10.22`);
-if (!$response.body) {
-    // 有undefined的情况
+
+if (!responseBody) {
     console.log(`$response.body为undefined:${url}`);
     $done({});
+    return;
 }
+
 if (method !== "GET") {
     $notification.post(notifyTitle, "method错误:", method);
 }
-let body = JSON.parse($response.body);
 
+let body;
+
+try {
+    body = JSON.parse(responseBody);
+} catch (error) {
+    console.log(`JSON解析错误: ${error}`);
+    $done({});
+    return;
+}
 
 if (!body.data) {
     console.log(url);
-    console.log(`body:${$response.body}`);
+    console.log(`body:${responseBody}`);
     $notification.post(notifyTitle, url, "data字段错误");
 } else {
     if (url.includes("x/v2/splash")) {
         console.log('开屏页' + (url.includes("splash/show") ? 'show' : 'list'));
-        if (!body.data.show) {
-            // 有时候返回的数据没有show字段
-            console.log('数据无show字段');
-        } else {
+        if (body.data.show) {
             delete body.data.show;
-            console.log('成功');
+            console.log('成功删除show字段');
+        } else {
+            console.log('数据无show字段');
         }
     } else if (url.includes("resource/show/tab/v2")) {
         console.log('tab修改');
         // 顶部右上角
-        if (!body.data.top) {
-            console.log(`body:${$response.body}`);
-            $notification.post(notifyTitle, 'tab', "top字段错误");
-        } else {
+        if (body.data.top) {
             body.data.top = body.data.top.filter(item => {
                 if (item.name === '游戏中心') {
                     console.log('去除右上角游戏中心');
@@ -42,67 +50,65 @@ if (!body.data) {
                 return true;
             });
             fixPos(body.data.top);
-        }
-        // 底部tab栏
-        if (!body.data.bottom) {
-            console.log(`body:${$response.body}`);
-            $notification.post(notifyTitle, 'tab', "bottom字段错误");
         } else {
+            console.log(`body:${responseBody}`);
+            $notification.post(notifyTitle, 'tab', "top字段错误");
+        }
+
+        // 底部tab栏
+        if (body.data.bottom) {
             body.data.bottom = body.data.bottom.filter(item => {
-                if (item.name === '发布') {
-                    console.log('保留发布');
-                    return false;
-                } else if (item.name === '会员购' || item.tab_id === '会员购Bottom') {
-                    console.log('保留会员购');
+                if (['发布', '会员购'].includes(item.name) || item.tab_id === '会员购Bottom') {
+                    console.log(`去除${item.name}`);
                     return false;
                 }
                 return true;
             });
             fixPos(body.data.bottom);
+        } else {
+            console.log(`body:${responseBody}`);
+            $notification.post(notifyTitle, 'tab', "bottom字段错误");
         }
     } else if (url.includes("x/v2/feed/index")) {
         console.log('推荐页');
-        if (!body.data.items?.length) {
-            console.log(`body:${$response.body}`);
-            $notification.post(notifyTitle, '推荐页', "items字段错误");
-        } else {
+        if (body.data.items?.length) {
             body.data.items = body.data.items.filter(i => {
-                const {card_type: cardType, card_goto: cardGoto} = i;
-                if (cardType && cardGoto) {
-                    if (cardType === 'banner_v8' && cardGoto === 'banner') {
-                        if (!i.banner_item) {
-                            console.log(`body:${$response.body}`);
-                            $notification.post(notifyTitle, '推荐页', "banner_item错误");
-                        } else {
-                            for (const v of i.banner_item) {
-                                if (!v.type) {
-                                    console.log(`body:${$response.body}`);
-                                    $notification.post(notifyTitle, '推荐页', "type错误");
-                                } else {
-                                    if (v.type === 'ad') {
-                                        console.log('banner广告');
-                                        return false;
-                                    }
-                                }
-                            }
-                        }
-                    } else if (cardType === 'cm_v2' && ['ad_web_s', 'ad_av', 'ad_web_gif', 'ad_player', 'ad_inline_3d', 'ad_inline_eggs'].includes(cardGoto)) {
-                        // ad_player大视频广告 ad_web_gif大gif广告 ad_web_s普通小广告 ad_av创作推广广告 ad_inline_3d  上方大的视频3d广告 ad_inline_eggs 上方大的视频广告
-                        console.log(`${cardGoto}广告去除)`);
-                        return false;
-                    } else if (cardType === 'small_cover_v10' && cardGoto === 'game') {
-                        console.log('游戏广告去除');
-                        return false;
-                    } else if (cardType === 'cm_double_v9' && cardGoto === 'ad_inline_av') {
-                        console.log('创作推广-大视频广告');
-                        return false;
-                    }
-                } else {
-                    console.log(`body:${$response.body}`);
+                const { card_type: cardType, card_goto: cardGoto } = i;
+
+                if (!cardType || !cardGoto) {
+                    console.log(`body:${responseBody}`);
                     $notification.post(notifyTitle, '推荐页', "无card_type/card_goto");
+                    return true;
+                }
+
+                if (cardType === 'banner_v8' && cardGoto === 'banner') {
+                    if (i.banner_item) {
+                        i.banner_item = i.banner_item.filter(v => {
+                            if (v.type === 'ad') {
+                                console.log('banner广告去除');
+                                return false;
+                            }
+                            return true;
+                        });
+                    } else {
+                        console.log(`body:${responseBody}`);
+                        $notification.post(notifyTitle, '推荐页', "banner_item错误");
+                    }
+                } else if (cardType === 'cm_v2' && ['ad_web_s', 'ad_av', 'ad_web_gif', 'ad_player', 'ad_inline_3d', 'ad_inline_eggs'].includes(cardGoto)) {
+                    console.log(`${cardGoto}广告去除`);
+                    return false;
+                } else if (cardType === 'small_cover_v10' && cardGoto === 'game') {
+                    console.log('游戏广告去除');
+                    return false;
+                } else if (cardType === 'cm_double_v9' && cardGoto === 'ad_inline_av') {
+                    console.log('创作推广-大视频广告去除');
+                    return false;
                 }
                 return true;
             });
+        } else {
+            console.log(`body:${responseBody}`);
+            $notification.post(notifyTitle, '推荐页', "items字段错误");
         }
     } else {
         $notification.post(notifyTitle, "路径匹配错误:", url);
@@ -110,14 +116,10 @@ if (!body.data) {
 }
 
 body = JSON.stringify(body);
-$done({
-    body
-});
-
+$done({ body });
 
 function fixPos(arr) {
-    for (let i = 0; i < arr.length; i++) {
-        // 修复pos
-        arr[i].pos = i + 1;
-    }
+    arr.forEach((item, index) => {
+        item.pos = index + 1;
+    });
 }
