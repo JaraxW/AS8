@@ -56,21 +56,30 @@ const modifyUserConfig = (body) => {
         "MinimumReward": 30000,
         "creditsForAdsCap": 37500
     };
-    
+
     let cars = [];
     for (let i = 1; i <= 399; i++) {
         if (![40, 43, 141, 208, 380, 381, 331].includes(i)) cars.push(i);
     }
     body["game"]["parameters"]["VehicleUpgradeAds"]["vehicles"] = cars;
 
-    body["offline_store"]["prices"].forEach(item => item["hidden"] = false);
+    // 解锁内购和价格设置
+    body["offline_store"]["prices"].forEach(item => {
+        item["hidden"] = false;  // 确保每个项目可见
+    });
+
     body["iap"]["prices"].forEach(item => {
-        item["hidden"] = false;
-        item["billing_methods"].forEach(method => method["price"] = 0.01);
+        item["hidden"] = false;  // 确保内购项不被隐藏
+        if (item["billing_methods"]) {
+            item["billing_methods"].forEach(method => {
+                method["price"] = 0.01;  // 设置价格为0.01
+            });
+        }
     });
 
     return body;
 };
+
 
 const modifyProfile = (body) => {
     delete body["_infractions"];
