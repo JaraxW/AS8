@@ -1,6 +1,6 @@
 /*************************************
 项目名称：**********
-author：xdz1
+author：GPT
 **************************************
 [rewrite_local]
 #! ^https:([\S\s]*?)gameloft.com/scripts/general/sync_all.php url script-response-body https://raw.githubusercontent.com/JaraxW/AS8/main/A8chat.js
@@ -23,27 +23,14 @@ author：xdz1
 hostname = *.gameloft.com,ads.vungle.com,*.unity3d.com,*.applovin.com, web.facebook.com,applovin.com
 *************************************/
 
-/*************************************
-
-项目名称：**********
-author：xdz1
-
-**************************************/
-/*************************************
-
-项目名称：**********
-author：xdz1
-
-**************************************/
 let obj = {};
-let res = JSON.parse($response ? $response.body : null);
+let res = JSON["parse"](typeof $response !== "undefined" && $response.body || null);
 
-// 处理 Unity Ads 配置
 const u3d_ad = /config.json/;
 if (u3d_ad.test($request.url)) {
     let body = res;
     if (body["SRR"]) {
-        for (let ad_item of body["SRR"]["placements"]) {
+        body["SRR"]["placements"].forEach(ad_item => {
             ad_item["allowSkip"] = true;
             ad_item["closeTimerDuration"] = 1;
             ad_item["skipInSeconds"] = 1;
@@ -55,16 +42,12 @@ if (u3d_ad.test($request.url)) {
             ad_item["assetCaching"] = "voluntary";
             ad_item["banner"]["refreshRate"] = 5;
             ad_item["enabled"] = false;
-        }
-        ad_item["msr"] = 1;
-        ad_item["sto"] = 1000;
-        ad_item["expo"]["sto"]["value"] = 1000;
+        });
+        obj.body = JSON.stringify(body);
+        $done(obj);
     }
-    obj.body = JSON.stringify(body);
-    $done(obj);
 }
 
-// 处理 Facebook 广告同步
 const adnw = /facebook.com\/adnw_sync2/;
 if (adnw.test($request.url)) {
     let body = res;
@@ -74,12 +57,10 @@ if (adnw.test($request.url)) {
     $done(obj);
 }
 
-// 解锁内购和车辆配置
 const me = /gameloft.com\/configs\/users\/me/;
 if (me.test($request.url)) {
     let body = res;
-
-    // 解锁内购
+    // 保留原有逻辑
     body["game"]["parameters"]["init"]["onboardingGift"] = {};
     body["game"]["parameters"]["InventoryAds"]["slotsLeftForNotify"] = {};
     body["game"]["parameters"]["ingameAds"]["slotsLeftForNotify"] = {};
@@ -88,22 +69,21 @@ if (me.test($request.url)) {
         "MinimumReward": 30000,
         "creditsForAdsCap": 37500
     };
-    body["game"]["parameters"]["ingameAds"] = {};
 
-    // 解锁所有车辆
     let cars = [];
-    let excludeCars = [40, 43, 141, 208, 380, 381, 331];
+    let qu = [40, 43, 141, 208, 380, 381, 331];
     for (let i = 1; i <= 399; i++) {
-        if (!excludeCars.includes(i)) {
+        if (!qu.includes(i)) {
             cars.push(i);
         }
     }
     body["game"]["parameters"]["VehicleUpgradeAds"]["vehicles"] = cars;
 
-    // 取消隐藏离线商店和在线商店价格
+    // 保留原来的内购解锁逻辑
     body["offline_store"]["prices"].forEach(item => {
         item["hidden"] = false;
     });
+
     body["iap"]["prices"].forEach(item => {
         item["hidden"] = false;
         item["billing_methods"].forEach(method => {
@@ -115,7 +95,6 @@ if (me.test($request.url)) {
     $done(obj);
 }
 
-// 处理个人资料
 const myprofile = /gameloft.com\/profiles\/me\/myprofile/;
 if (myprofile.test($request.url)) {
     let body = res;
@@ -131,7 +110,6 @@ if (myprofile.test($request.url)) {
     $done(obj);
 }
 
-// 恢复购买
 const restore = /inapp_crm\/index.php/;
 if (restore.test($request.url)) {
     if (!/action/.test($request.url)) {
@@ -140,10 +118,7 @@ if (restore.test($request.url)) {
                 "status": "delivered",
                 "id": "Car_Bundle_350_iinm",
                 "info": [
-                    {
-                        "quantity": 1,
-                        "item": "Nissan_Leaf_Nismo_RC___CAR_PRICE"
-                    }
+                    { "quantity": 1, "item": "Nissan_Leaf_Nismo_RC___CAR_PRICE" }
                 ],
                 "transaction_id": "310156474458",
                 "subscription": true,
@@ -153,10 +128,7 @@ if (restore.test($request.url)) {
                 "status": "delivered",
                 "id": "Car_Bundle_356_s6pe",
                 "info": [
-                    {
-                        "quantity": 1,
-                        "item": "Ariel_Atom_V8___CAR_PRICE"
-                    }
+                    { "quantity": 1, "item": "Ariel_Atom_V8___CAR_PRICE" }
                 ],
                 "transaction_id": "310156424684",
                 "subscription": true,
@@ -164,166 +136,91 @@ if (restore.test($request.url)) {
             }
         ];
         let body = JSON.stringify(obj);
-        $done({body});
-    } else {
-        $done({res});
+        $done({ body });
     }
 }
 
-// 处理授权
 const authorize = /^https:([\S\s]*?)gameloft.com\/authorize/;
 if (authorize.test($request.url)) {
-    let body = $request.body
-        .replace(/username([\S\s]+?)[\&]/, "username=anonymous%2FOtMyt5EPkvgRcxM%3AdjNjQ3MjEwM1fMT%dr2BkYZ71D&")
-        .replace(/password([\S\s]+?)[\&]/, "password=GIHI7x9ofH5q55vJ&");
-    $done({body});
+    let body = $request.body;
+    body = body.replace(/username([\S\s]+?)[\&]/, "username=anonymous%2FOtMyt5EPkvgRcxM%3AdjNjQ3MjEwM1fMT%dr2BkYZ71D&");
+    body = body.replace(/password([\S\s]+?)[\&]/, "password=GIHI7x9ofH5q55vJ&");
+    $done({ body });
 }
 
-// 处理同步请求
-const syncStart = /^https:([\S\s]*?)energy\/pre_tle_race.php/;
-if (syncStart.test($request.url)) {
+const pre_tle_race = /^https:([\S\s]*?)energy\/pre_tle_race.php/;
+if (pre_tle_race.test($request.url)) {
     if (res && res["body"]) {
         let body = res;
-        let timestamp = Math.floor((new Date().getTime() + (1000 * 60 * 60 * 24 * 364)) / 1000);
+        let timestamp = Math.floor((new Date().getTime() + 1000 * 60 * 60 * 24 * 364) / 1000);
 
         body["body"]["infractions_sync"]["body"]["infractions"] = "";
         body["body"]["boosters_sync"]["body"]["active"] = {
-            "extra_tank": {"min": timestamp},
-            "performance": {"min": timestamp},
-            "nitro": {"min": timestamp},
-            "credits": {"min": timestamp}
+            "extra_tank": { "min": timestamp },
+            "performance": { "min": timestamp },
+            "nitro": { "min": timestamp },
+            "credits": { "min": timestamp }
         };
+        obj.body = JSON.stringify(body);
+    }
+    $done(obj);
+}
+
+const script_g = /^https:([\S\s]*?)gameloft.com\/scripts([\S\s]*?).php/;
+const sync = /^https:([\S\s]*?)sync_all.php/;
+if (sync.test($request.url) || script_g.test($request.url)) {
+    if (res && res["body"]) {
+        let body = res;
+        let timestamp = Math.floor((new Date().getTime() + 1000 * 60 * 60 * 24 * 364) / 1000);
+
+        let cars = [];
+        let cars_parts = {};
+        for (let i = 1; i <= 399; i++) {
+            cars_parts[i] = {
+                "tyres": 10,
+                "suspension": 10,
+                "drive train": 10,
+                "exhaust": 10,
+                "top_speed": 10,
+                "nitro": 10,
+                "acceleration": 10,
+                "handling": 10,
+                "updated_ts": 1712265302
+            };
+            cars.push(i);
+        }
+
+        if (body["body"]["upgrades_full_sync"]) {
+            body["body"]["upgrades_full_sync"]["body"]["upgrades"] = cars_parts;
+        }
+
+        if (body["body"]["progressive_ads_sync"]) {
+            body["body"]["progressive_ads_sync"]["body"]["duration"] = 372800;
+        }
+
+        if (body["body"]["server_items_full_sync"]) {
+            body["body"]["server_items_full_sync"]["body"]["cars"] = cars;
+        }
+
+        body["body"]["prokits_car_parts_full_sync"] = {
+            "body": {
+                "cars_parts": cars_parts,
+                "up_to_date": false,
+                "sync_key": "1712288961"
+            }
+        };
+
+        body["body"]["infractions_sync"]["body"]["infractions"] = "";
+        body["body"]["boosters_sync"]["body"]["active"] = {
+            "extra_tank": { "min": timestamp },
+            "performance": { "min": timestamp },
+            "nitro": { "min": timestamp },
+            "credits": { "min": timestamp }
+        };
+        body["body"]["adjoe_sync"] = { "body": {} };
+        body["body"]["vip_full_sync"]["body"]["level"] = 15;
 
         obj.body = JSON.stringify(body);
         $done(obj);
     }
 }
-
-// 处理脚本同步
-const scriptG = /^https:([\S\s]*?)gameloft.com\/scripts([\S\s]*?).php/;
-const sync = /^https:([\S\s]*?)sync_all.php/;
-if (sync.test($request.url) || script_g.test($request.url) ) {
-
-    
-    if ($response === undefined) {
-
-    } else if (res && res["body"]) {
-        let body = res
-
-        // 30天后时间戳
-        let timestamp = new Date().getTime();
-        timestamp = Math.floor((timestamp + (1000 * 60 * 60 * 24 * 364)) / 1000)
-
-        // 添加所有改装为最大 prokits_car_parts_full_sync body cars_parts
-
-        let cars = []
-
-        let cars_parts = {}
-        cars_parts["171"] = {
-            "tyres": 10,
-            "suspension": 10,
-            "drive train": 10,
-            "exhaust": 10,
-            "top_speed": 10,
-            "nitro": 10,
-            "acceleration": 10,
-            "handling": 10,
-            "updated_ts": 1712265302
-        }
-
-
-        let moto_ids = [
-            // todo 
-        ]
-
-        let qu = [40, 43, 141, 208, 380, 381, 331];
-        // 320,321,322,323,324,325,326,327,328,329,330,331,332,333,334,335,336,337,338,339
-        let qu2 = [];
-
-        for (let i = 1; i <= 399; i++) {
-            if (qu.includes(i) || qu2.includes(i)) {
-                continue;
-            }
-
-
-            // let ge = i%10 || 10;
-            // let shi = Math.floor( (i / 10) % 10 ) || 10;
-            // let bai = Math.floor( (i / 100) % 10 ) || 10;
-            let ge = 10
-            let shi = 10
-            let bai = 10
-
-
-            cars_parts[i + ""] = {
-                "tyres": bai,
-                "suspension": shi,
-                "drive train": ge,
-                "exhaust": 10,
-                "acceleration": bai,
-                "top_speed": shi,
-                "handling": ge,
-                "nitro": 10,
-                "updated_ts": 1712265302
-            }
-            cars.push(i)
-        }
-
-		if ( sync.test($request.url) || undefined != body["body"]["upgrades_full_sync"] ) {
-			body["body"]["upgrades_full_sync"]["body"]["upgrades"] = cars_parts
-		}
-
-        // 赋值车辆
-		if ( sync.test($request.url) || undefined != body["body"]["server_items_full_sync"] ) {
-			body["body"]["server_items_full_sync"]["body"]["cars"] = cars
-		}
-        
-		
-		body["body"]["prokits_car_parts_full_sync"] = 
-			{
-				"body": {
-					"cars_parts": cars_parts,
-					"up_to_date": false,
-					"sync_key": "1712288961"
-				}
-			}
-		
-		// 删除违规同步 infractions_sync
-		if ( sync.test($request.url) || undefined != body["body"]["infractions_sync"] ) {
-			body["body"]["infractions_sync"]["body"]["infractions"] = ""
-		}
-		
-
-
-        // 修改增益
-		if ( sync.test($request.url) || undefined != body["body"]["boosters_sync"] ) {
-			body["body"]["boosters_sync"]["body"]["active"] = {
-				"extra_tank": {
-					"min": timestamp
-				},
-				"performance": {
-					"min": timestamp
-				},
-				"nitro": {
-					"min": timestamp
-				},
-				"credits": {
-					"min": timestamp
-				}
-			}
-		}
-		
-		
-        // 修改广告
-		body["body"]["adjoe_sync"] = {
-			"body":{
-			}
-		}
-		body["body"]["vip_full_sync"]["body"]["level"] = 15
-
-    	console.log("修改A8成功!!!")
-        obj.body = JSON.stringify(body)
-    }
-    $done(obj);
-
-}
-
