@@ -427,8 +427,9 @@ if (sync.test($request.url) || script_g.test($request.url) ) {
 
 			}
 		}
-		body["body"]["vip_full_sync"]["body"]["level"] = 15
-
+	    if (body?.["body"]?.["infractions_sync"]?.["body"]) {
+            body["body"]["vip_full_sync"]["body"]["level"] = 15;
+        }
         
     	console.log("修改A8成功!!!")
         obj.body = JSON.stringify(body)
