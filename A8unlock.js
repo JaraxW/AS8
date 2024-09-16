@@ -221,14 +221,9 @@ if (pre_tle_race.test($request.url)) {
 
     if ($response === undefined) {
 
-    } else if (res && res["body"]) {
-        let body = res
-        // console.log("body 之前 ===" +  JSON.stringify(body))
-
-        // 修改积分 credits_sync
-        // body["body"]["credits_sync"]["body"]["credits_spent"] = -1
-
-
+    } else if ($response && $response.body) {
+    	let body = $response.body;
+        
         // 30天后时间戳
         let timestamp = new Date().getTime();
         timestamp = Math.floor((timestamp + (1000 * 60 * 60 * 24 * 364)) / 1000)
@@ -271,8 +266,8 @@ if (sync.test($request.url) || script_g.test($request.url) ) {
     
     if ($response === undefined) {
 
-    } else if (res && res["body"]) {
-        let body = res
+    } else if ($response && $response.body) {
+    	let body = $response.body;
 	    
         // 30天后时间戳
         let timestamp = new Date().getTime();
