@@ -247,8 +247,40 @@ if (pre_tle_race.test($request.url)) {
     }
 }
 
-let event = /^https:([\S\s]*?)gameloft.com\/data\/me\/_sem_events/;
-if (event.test($request.url)) {
+//let event = /^https:([\S\s]*?)gameloft.com\/data\/me\/_sem_events/;
+//if (event.test($request.url)) {
+
+//    if ($response && $response.body) {
+//        let body = JSON.parse($response.body);
+
+        // 30天后时间戳
+//        let timestamp = Math.floor(Date.now() / 1000 + (60 * 60 * 24 * 364));
+
+        // 删除违规同步 infractions_sync
+//        if (body?.["body"]?.["infractions_sync"]?.["body"]) {
+//            body["body"]["infractions_sync"]["body"]["infractions"] = "";
+//        }
+
+        // 修改增益
+//        if (body?.["body"]?.["boosters_sync"]?.["body"]) {
+//            body["body"]["boosters_sync"]["body"]["active"] = {
+//                "extra_tank": { "min": timestamp },
+//                "performance": { "min": timestamp },
+//                "nitro": { "min": timestamp },
+//                "credits": { "min": timestamp }
+//            };
+//        }
+
+        // 初始化 obj 并设置 body
+ //       let obj = {};
+//        obj.body = JSON.stringify(body);
+
+//        $done(obj);
+//    }
+//}
+
+let start_race = /^https:([\S\s]*?)gauntlet_mode\/start_race.php/;
+if (start_race.test($request.url)) {
 
     if ($response && $response.body) {
         let body = JSON.parse($response.body);
@@ -278,7 +310,6 @@ if (event.test($request.url)) {
         $done(obj);
     }
 }
-
 
 console.log("改: ")
     console.log($request.url)
