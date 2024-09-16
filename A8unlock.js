@@ -142,8 +142,8 @@ if (myprofile.test($request.url)) {
             body["_adjoe_reward"]["data"] = "";
             body["_ad_rewards"]["data"] = "";
             body["_ads_progressive"] = {};
-            body["_Vip"]["level"] = 15;
-            body["_Vip"]["initial_points"] = 155;
+           // body["_Vip"]["level"] = 15;
+          //  body["_Vip"]["initial_points"] = 155;
         }
 
         // 初始化 obj 并设置 body
