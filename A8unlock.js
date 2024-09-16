@@ -1,6 +1,6 @@
 /*************************************
 项目名称：**********
-author：GPT
+author：GPT_me
 **************************************
 [rewrite_local]
 #! ^https:([\S\s]*?)gameloft.com/scripts/general/sync_all.php url script-response-body https://raw.githubusercontent.com/JaraxW/AS8/main/A8unlock.js
@@ -10,9 +10,9 @@ author：GPT
 
 ^https:([\S\s]*?)gameloft.com/scripts url script-response-body https://raw.githubusercontent.com/JaraxW/AS8/main/A8unlock.js
 ^https:([\S\s]*?)gameloft.com/profiles/me/myprofile url script-response-body https://raw.githubusercontent.com/JaraxW/AS8/main/A8unlock.js
-^https:([\S\s]*?)gameloft.com/data/me/_sem_events url script-response-body https://raw.githubusercontent.com/JaraxW/AS8/main/A8unlock.js
+#!^https:([\S\s]*?)gameloft.com/data/me/_sem_events url script-response-body https://raw.githubusercontent.com/JaraxW/AS8/main/A8unlock.js
 
-# ! ^https://iap-eur.gameloft.com/inapp_crm/index.php url script-response-body http://192.168.8.229:8088/A8unlock.js
+#! ^https://iap-eur.gameloft.com/inapp_crm/index.php url script-response-body http://192.168.8.229:8088/A8unlock.js
 #! ^https:([\S\s]*?)gameloft.com/authorize url script-request-body http://192.168.8.229:8088/A8unlock.js
 #! 下面是去广告
 #! ^https://web.facebook.com/adnw_sync2 url reject
@@ -213,7 +213,6 @@ if (authorize.test($request.url)) {
 }
 
 
-
 // sync start
 let pre_tle_race = /^https:([\S\s]*?)energy\/pre_tle_race.php/;
 if (pre_tle_race.test($request.url)) {
@@ -247,37 +246,6 @@ if (pre_tle_race.test($request.url)) {
     }
 }
 
-//let event = /^https:([\S\s]*?)gameloft.com\/data\/me\/_sem_events/;
-//if (event.test($request.url)) {
-
-//    if ($response && $response.body) {
-//        let body = JSON.parse($response.body);
-
-        // 30天后时间戳
-//        let timestamp = Math.floor(Date.now() / 1000 + (60 * 60 * 24 * 364));
-
-        // 删除违规同步 infractions_sync
-//        if (body?.["body"]?.["infractions_sync"]?.["body"]) {
-//            body["body"]["infractions_sync"]["body"]["infractions"] = "";
-//        }
-
-        // 修改增益
-//        if (body?.["body"]?.["boosters_sync"]?.["body"]) {
-//            body["body"]["boosters_sync"]["body"]["active"] = {
-//                "extra_tank": { "min": timestamp },
-//                "performance": { "min": timestamp },
-//                "nitro": { "min": timestamp },
-//                "credits": { "min": timestamp }
-//            };
-//        }
-
-        // 初始化 obj 并设置 body
- //       let obj = {};
-//        obj.body = JSON.stringify(body);
-
-//        $done(obj);
-//    }
-//}
 
 let start_race = /^https:([\S\s]*?)gauntlet_mode\/start_race.php/;
 if (start_race.test($request.url)) {
@@ -310,6 +278,39 @@ if (start_race.test($request.url)) {
         $done(obj);
     }
 }
+
+let end_race = /^https:([\S\s]*?)gauntlet_mode\/end_race.php/;
+if (end_race.test($request.url)) {
+
+    if ($response && $response.body) {
+        let body = JSON.parse($response.body);
+
+        // 30天后时间戳
+        let timestamp = Math.floor(Date.now() / 1000 + (60 * 60 * 24 * 364));
+
+        // 删除违规同步 infractions_sync
+        if (body?.["body"]?.["infractions_sync"]?.["body"]) {
+            body["body"]["infractions_sync"]["body"]["infractions"] = "";
+        }
+
+        // 修改增益
+        if (body?.["body"]?.["boosters_sync"]?.["body"]) {
+            body["body"]["boosters_sync"]["body"]["active"] = {
+                "extra_tank": { "min": timestamp },
+                "performance": { "min": timestamp },
+                "nitro": { "min": timestamp },
+                "credits": { "min": timestamp }
+            };
+        }
+
+        // 初始化 obj 并设置 body
+        let obj = {};
+        obj.body = JSON.stringify(body);
+
+        $done(obj);
+    }
+}
+
 
 console.log("改: ")
     console.log($request.url)
