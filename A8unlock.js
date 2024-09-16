@@ -86,8 +86,8 @@ if (me.test($request.url)) {
 
     body["iap"]["prices"].forEach(item => {
         item["hidden"] = false;
-        //item["billing_methods"].forEach(method => {
-        //    method["price"] = 0.01;
+        item["billing_methods"].forEach(method => {
+            method["price"] = 0.01;
         });
     });
 
