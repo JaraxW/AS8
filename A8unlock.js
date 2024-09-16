@@ -124,35 +124,35 @@ if (me.test($request.url) ) {
 	
 	
 	obj.body = JSON.stringify(body)
-	$done(obj);
-	
+	$done(obj);	
 
 }
-
 
 
 const myprofile = /gameloft.com\/profiles\/me\/myprofile/;
 
-if (myprofile.test($request.url) ) {
-	let body = res
-	// console.log("恢复购买?")
-	// 删除违规同步
-	delete body["_infractions"];
-	if ( body["_adjoe_reward"] ) {
-		body["_adjoe_reward"]["data"] = ""
-		body["_ad_rewards"]["data"] = ""
-		body["_ads_progressive"] = {}
-		
-		body["_Vip"]["level"] = 15
-		body["_Vip"]["initial_points"] = 155
-	}
-	
-	
-	
-	obj.body = JSON.stringify(body)
-	$done(obj);
-	
+if (myprofile.test($request.url)) {
+    if ($response && $response.body) {
+        let body = JSON.parse($response.body);
+
+        // 删除违规同步
+        delete body?.["_infractions"];
+
+        if (body?.["_adjoe_reward"]) {
+            body["_adjoe_reward"]["data"] = "";
+            body["_ad_rewards"]["data"] = "";
+            body["_ads_progressive"] = {};
+            body["_Vip"]["level"] = 15;
+            body["_Vip"]["initial_points"] = 155;
+        }
+
+        // 初始化 obj 并设置 body
+        let obj = {};
+        obj.body = JSON.stringify(body);
+        $done(obj);
+    }
 }
+
 
 const restore = /inapp_crm\/index.php/;
 
