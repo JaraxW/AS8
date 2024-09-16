@@ -3,14 +3,11 @@
 author：GPT_me
 **************************************
 [rewrite_local]
-#! ^https:([\S\s]*?)gameloft.com/scripts/general/sync_all.php url script-response-body https://raw.githubusercontent.com/JaraxW/AS8/main/A8unlock.js
-#! ^https:([\S\s]*?)gameloft.com/scripts/energy/pre_tle_race.php url script-response-body https://raw.githubusercontent.com/JaraxW/AS8/main/A8unlock.js
 ^https:([\S\s]*?)gameloft.com/configs/users/me url script-response-body https://raw.githubusercontent.com/JaraxW/AS8/main/A8unlock.js
 ^https:([\S\s]*?)unityads.unity3d.com/([\S\s]*?)/config.json url script-response-body https://raw.githubusercontent.com/JaraxW/AS8/main/A8unlock.js
 
 ^https:([\S\s]*?)gameloft.com/scripts url script-response-body https://raw.githubusercontent.com/JaraxW/AS8/main/A8unlock.js
 ^https:([\S\s]*?)gameloft.com/profiles/me/myprofile url script-response-body https://raw.githubusercontent.com/JaraxW/AS8/main/A8unlock.js
-#!^https:([\S\s]*?)gameloft.com/data/me/_sem_events url script-response-body https://raw.githubusercontent.com/JaraxW/AS8/main/A8unlock.js
 
 #! ^https://iap-eur.gameloft.com/inapp_crm/index.php url script-response-body http://192.168.8.229:8088/A8unlock.js
 #! ^https:([\S\s]*?)gameloft.com/authorize url script-request-body http://192.168.8.229:8088/A8unlock.js
@@ -246,6 +243,37 @@ if (pre_tle_race.test($request.url)) {
     }
 }
 
+let post_event_score = /^https:([\S\s]*?)tle\/post_event_score.php/;
+if (post_event_score.test($request.url)) {
+
+    if ($response && $response.body) {
+        let body = JSON.parse($response.body);
+
+        // 30天后时间戳
+        let timestamp = Math.floor(Date.now() / 1000 + (60 * 60 * 24 * 364));
+
+        // 删除违规同步 infractions_sync
+        if (body?.["body"]?.["infractions_sync"]?.["body"]) {
+            body["body"]["infractions_sync"]["body"]["infractions"] = "";
+        }
+
+        // 修改增益
+        if (body?.["body"]?.["boosters_sync"]?.["body"]) {
+            body["body"]["boosters_sync"]["body"]["active"] = {
+                "extra_tank": { "min": timestamp },
+                "performance": { "min": timestamp },
+                "nitro": { "min": timestamp },
+                "credits": { "min": timestamp }
+            };
+        }
+
+        // 初始化 obj 并设置 body
+        let obj = {};
+        obj.body = JSON.stringify(body);
+
+        $done(obj);
+    }
+}
 
 let start_race = /^https:([\S\s]*?)gauntlet_mode\/start_race.php/;
 if (start_race.test($request.url)) {
