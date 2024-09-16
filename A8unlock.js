@@ -388,19 +388,7 @@ if (sync.test($request.url) || script_g.test($request.url) ) {
 		
         
 		}
-		//body["body"]["vip_full_sync"]["body"]["level"] = 15
-body["body"]["boosters_sync"]["body"]["active"] = {
-				"extra_tank": {
-					"min": timestamp
-				},
-				"performance": {
-					"min": timestamp
-				},
-				"nitro": {
-					"min": timestamp
-				},
-				"credits": {
-					"min": timestamp
+		body["body"]["vip_full_sync"]["body"]["level"] = 15
 
         // body["body"]["ad_rewards_status"]["ads_ads_extra_fusion_points_reward"] = 200000
         // let amount = body["body"]["fusion_points_partial_sync"]["body"]["balance"] + 190000
