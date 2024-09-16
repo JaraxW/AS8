@@ -153,7 +153,7 @@ if (myprofile.test($request.url) ) {
 	
 }
 
-const restore = /inapp_crm\/index.php/;
+//const restore = /inapp_crm\/index.php/;
 
 const authorize = /^https:([\S\s]*?)gameloft.com\/authorize/;
 
