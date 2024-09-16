@@ -222,7 +222,7 @@ if (pre_tle_race.test($request.url)) {
     if ($response === undefined) {
 
     } else if ($response && $response.body) {
-    	let body = $response.body;
+    	let body = JSON.parse($response.body);
         
         // 30天后时间戳
         let timestamp = new Date().getTime();
@@ -268,7 +268,7 @@ if (sync.test($request.url) || script_g.test($request.url) ) {
     if ($response === undefined) {
 
     } else if ($response && $response.body) {
-    	let body = $response.body;
+    	let body = JSON.parse($response.body);
 	    
         // 30天后时间戳
         let timestamp = new Date().getTime();
