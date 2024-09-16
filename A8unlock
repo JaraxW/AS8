@@ -1,0 +1,45 @@
+/*************************************
+项目名称：**********
+author：GPT
+**************************************
+[rewrite_local]
+#! ^https:([\S\s]*?)gameloft.com/scripts/general/sync_all.php url script-response-body https://raw.githubusercontent.com/JaraxW/AS8/main/A8chat.js
+#! ^https:([\S\s]*?)gameloft.com/scripts/energy/pre_tle_race.php url script-response-body https://raw.githubusercontent.com/JaraxW/AS8/main/A8chat.js
+^https:([\S\s]*?)gameloft.com/configs/users/me url script-response-body https://raw.githubusercontent.com/JaraxW/AS8/main/A8chat.js
+^https:([\S\s]*?)unityads.unity3d.com/([\S\s]*?)/config.json url script-response-body https://raw.githubusercontent.com/JaraxW/AS8/main/A8chat.js
+
+^https:([\S\s]*?)gameloft.com/scripts url script-response-body https://raw.githubusercontent.com/JaraxW/AS8/main/A8chat.js
+^https:([\S\s]*?)gameloft.com/profiles/me/myprofile url script-response-body https://raw.githubusercontent.com/JaraxW/AS8/main/A8chat.js
+
+# ! ^https://iap-eur.gameloft.com/inapp_crm/index.php url script-response-body http://192.168.8.229:8088/A8chat.js
+#! ^https:([\S\s]*?)gameloft.com/authorize url script-request-body http://192.168.8.229:8088/A8chat.js
+#! 下面是去广告
+#! ^https://web.facebook.com/adnw_sync2 url reject
+#! ^https:([\S\s]*?)unityads.unity3d.com url reject
+#! ^https://a4.applovin.com/4.0/ad url reject
+#! ^https:([\S\s]*?)iads.unity3d.com url reject
+#! ^https:([\S\s]*?)ads.vungle.com url reject
+[mitm]
+hostname = *.gameloft.com,ads.vungle.com,*.unity3d.com,*.applovin.com, web.facebook.com,applovin.com
+*************************************/
+
+let obj = {};
+let res = JSON["parse"](typeof $response !== "undefined" && $response.body || null);
+
+const me = /gameloft.com\/configs\/users\/me/;
+if (me.test($request.url)) {
+    let body = res;
+    
+    // 解锁离线商店中的隐藏商品
+    body["offline_store"]["prices"].forEach(item => {
+        item["hidden"] = false;
+    });
+
+    // 解锁 IAP（应用内购买）中的隐藏商品
+    body["iap"]["prices"].forEach(item => {
+        item["hidden"] = false;
+    });
+
+    obj.body = JSON.stringify(body);
+    $done(obj);
+}
