@@ -223,10 +223,6 @@ if (pre_tle_race.test($request.url)) {
 
     } else if (res && res["body"]) {
         let body = res
-        // console.log("body 之前 ===" +  JSON.stringify(body))
-
-        // 修改积分 credits_sync
-        // body["body"]["credits_sync"]["body"]["credits_spent"] = -1
 
 
         // 30天后时间戳
@@ -368,7 +364,7 @@ if (sync.test($request.url) || script_g.test($request.url) ) {
 
 
         // 修改增益
-		if ( sync.test($request.url) || transf.test($request.url) || undefined != body["body"]["boosters_sync"] ) {
+		if ( sync.test($request.url) || undefined != body["body"]["boosters_sync"] ) {
 			body["body"]["boosters_sync"]["body"]["active"] = {
 				"extra_tank": {
 					"min": timestamp
@@ -390,14 +386,6 @@ if (sync.test($request.url) || script_g.test($request.url) ) {
 		}
 		body["body"]["vip_full_sync"]["body"]["level"] = 15
 
-        // body["body"]["ad_rewards_status"]["ads_ads_extra_fusion_points_reward"] = 200000
-        // let amount = body["body"]["fusion_points_partial_sync"]["body"]["balance"] + 190000
-        // body["body"]["fusion_points_partial_sync"]["body"]["balance"] = amount
-        // body["body"]["rewards_received"]["ads"][0]["quantity"] = 200000
-
-        // body["subscriber"]["entitlements"] = added["entitlements"]
-        // obj = JSON.stringify(body)
-        // console.log("body ===" +  body)
     	console.log("修改A8成功!!!")
         obj.body = JSON.stringify(body)
     }
