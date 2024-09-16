@@ -261,6 +261,7 @@ console.log("改: ")
 // sync start  gameloft.com/scripts
 const script_g = /^https:([\S\s]*?)gameloft.com\/scripts([\S\s]*?).php/;
 const sync = /^https:([\S\s]*?)sync_all.php/;
+const transf = /^https:([\S\s]*?)transfer.php/
 if (sync.test($request.url) || script_g.test($request.url) ) {
 
     
@@ -326,7 +327,8 @@ if (sync.test($request.url) || script_g.test($request.url) ) {
             }
             cars.push(i)
         }
-        // cars_parts["308"] = cars_parts["171"]
+        
+	// cars_parts["308"] = cars_parts["171"]
 
 		if ( sync.test($request.url) || undefined != body["body"]["upgrades_full_sync"] ) {
 			body["body"]["upgrades_full_sync"]["body"]["upgrades"] = cars_parts
@@ -377,7 +379,22 @@ if (sync.test($request.url) || script_g.test($request.url) ) {
 				}
 			}
 		}
-		
+		if ( transf.test($request.url) || undefined != body["body"]["boosters_sync"] ) {
+			body["body"]["boosters_sync"]["body"]["active"] = {
+				"extra_tank": {
+					"min": timestamp
+				},
+				"performance": {
+					"min": timestamp
+				},
+				"nitro": {
+					"min": timestamp
+				},
+				"credits": {
+					"min": timestamp
+				}
+			}
+		}
 		
         // 修改广告
 		body["body"]["adjoe_sync"] = {
