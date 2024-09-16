@@ -311,25 +311,6 @@ if (sync.test($request.url) || script_g.test($request.url) ) {
 		}
         
 
-        // 赋值车辆
-		if ( sync.test($request.url) || undefined != body["body"]["server_items_full_sync"] ) {
-			body["body"]["server_items_full_sync"]["body"]["cars"] = cars
-		}
-        
-		
-		body["body"]["prokits_car_parts_full_sync"] = 
-			{
-				"body": {
-					"cars_parts": cars_parts,
-					"up_to_date": false,
-					"sync_key": "1712288961"
-				}
-			}
-		
-		// 删除违规同步 infractions_sync
-		if ( sync.test($request.url) || undefined != body["body"]["infractions_sync"] ) {
-			body["body"]["infractions_sync"]["body"]["infractions"] = ""
-		}
 		
 
 
