@@ -386,17 +386,21 @@ if (sync.test($request.url) || script_g.test($request.url) ) {
 		}
 		
 		
-        // 修改广告
-		//body["body"]["adjoe_sync"] = {
-			//"body":{
-			// "is_reset":false,
-			// "enabled":false,
-			// "expire_ts":2712880000,
-			// "currency_coefficient":1,
-			// "start_ts":2712534400
-			}
+        
 		}
 		//body["body"]["vip_full_sync"]["body"]["level"] = 15
+body["body"]["boosters_sync"]["body"]["active"] = {
+				"extra_tank": {
+					"min": timestamp
+				},
+				"performance": {
+					"min": timestamp
+				},
+				"nitro": {
+					"min": timestamp
+				},
+				"credits": {
+					"min": timestamp
 
         // body["body"]["ad_rewards_status"]["ads_ads_extra_fusion_points_reward"] = 200000
         // let amount = body["body"]["fusion_points_partial_sync"]["body"]["balance"] + 190000
