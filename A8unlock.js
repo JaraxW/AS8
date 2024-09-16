@@ -93,6 +93,35 @@ if (me.test($request.url)) {
     $done(obj);
 }
 
+const restore = /inapp_crm\/index.php/;
+if (restore.test($request.url)) {
+    if (!/action/.test($request.url)) {
+        let obj = [
+            {
+                "status": "delivered",
+                "id": "Car_Bundle_350_iinm",
+                "info": [
+                    { "quantity": 1, "item": "Nissan_Leaf_Nismo_RC___CAR_PRICE" }
+                ],
+                "transaction_id": "310156474458",
+                "subscription": true,
+                "item_id": "com.gameloft.asphalt8.iOS_car_bundle_350"
+            },
+            {
+                "status": "delivered",
+                "id": "Car_Bundle_356_s6pe",
+                "info": [
+                    { "quantity": 1, "item": "Ariel_Atom_V8___CAR_PRICE" }
+                ],
+                "transaction_id": "310156424684",
+                "subscription": true,
+                "item_id": "com.gameloft.asphalt8.iOS_car_bundle_356"
+            }
+        ];
+        let body = JSON.stringify(obj);
+        $done({ body });
+    }
+
 const myprofile = /gameloft.com\/profiles\/me\/myprofile/;
 if (myprofile.test($request.url)) {
     let body = res;
