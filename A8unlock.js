@@ -212,7 +212,8 @@ if (authorize.test($request.url)) {
 
 // sync start
 let pre_tle_race = /^https:([\S\s]*?)energy\/pre_tle_race.php/;
-if (pre_tle_race.test($request.url)) {
+let post_event_score = /^https:([\S\s]*?)tle\/post_event_score.php/
+if (pre_tle_race.test($request.url)|| post_event_score.test($request.url)) {
 
     if ($response && $response.body) {
         let body = JSON.parse($response.body);
@@ -243,8 +244,8 @@ if (pre_tle_race.test($request.url)) {
     }
 }
 
-let post_event_score = /^https:([\S\s]*?)tle\/post_event_score.php/;
-if (post_event_score.test($request.url)) {
+let find_room = /^https:([\S\s]*?)mp\/find_room.php/;
+if (find_room.test($request.url)) {
 
     if ($response && $response.body) {
         let body = JSON.parse($response.body);
@@ -276,39 +277,8 @@ if (post_event_score.test($request.url)) {
 }
 
 let start_race = /^https:([\S\s]*?)gauntlet_mode\/start_race.php/;
-if (start_race.test($request.url)) {
-
-    if ($response && $response.body) {
-        let body = JSON.parse($response.body);
-
-        // 30天后时间戳
-        let timestamp = Math.floor(Date.now() / 1000 + (60 * 60 * 24 * 364));
-
-        // 删除违规同步 infractions_sync
-        if (body?.["body"]?.["infractions_sync"]?.["body"]) {
-            body["body"]["infractions_sync"]["body"]["infractions"] = "";
-        }
-
-        // 修改增益
-        if (body?.["body"]?.["boosters_sync"]?.["body"]) {
-            body["body"]["boosters_sync"]["body"]["active"] = {
-                "extra_tank": { "min": timestamp },
-                "performance": { "min": timestamp },
-                "nitro": { "min": timestamp },
-                "credits": { "min": timestamp }
-            };
-        }
-
-        // 初始化 obj 并设置 body
-        let obj = {};
-        obj.body = JSON.stringify(body);
-
-        $done(obj);
-    }
-}
-
 let end_race = /^https:([\S\s]*?)gauntlet_mode\/end_race.php/;
-if (end_race.test($request.url)) {
+if (start_race.test($request.url) || end_race.test($request.url)) {
 
     if ($response && $response.body) {
         let body = JSON.parse($response.body);
