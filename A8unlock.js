@@ -220,7 +220,7 @@ if (pre_tle_race.test($request.url) || tle.test($request.url)) {
         let body = JSON.parse($response.body);
 
         // 30天后时间戳
-        let timestamp = Math.floor(Date.now() / 1000 + (60 * 60 * 24 * 364));
+        let timestamp = Math.floor(Date.now() / 1000 + (60 * 60 * 24 * 30));
 
         // 删除违规同步 infractions_sync
         if (body?.["body"]?.["infractions_sync"]?.["body"]) {
@@ -254,7 +254,7 @@ if (muilt_play.test($request.url) || claim.test($request.url)) {
         let body = JSON.parse($response.body);
 
         // 30天后时间戳
-        let timestamp = Math.floor(Date.now() / 1000 + (60 * 60 * 24 * 364));
+        let timestamp = Math.floor(Date.now() / 1000 + (60 * 60 * 24 * 30));
 
         // 删除违规同步 infractions_sync
         if (body?.["body"]?.["infractions_sync"]?.["body"]) {
@@ -288,7 +288,7 @@ if (guantlet.test($request.url)) {
         let body = JSON.parse($response.body);
 
         // 30天后时间戳
-        let timestamp = Math.floor(Date.now() / 1000 + (60 * 60 * 24 * 364));
+        let timestamp = Math.floor(Date.now() / 1000 + (60 * 60 * 24 * 30));
 
         // 删除违规同步 infractions_sync
         if (body?.["body"]?.["infractions_sync"]?.["body"]) {
@@ -320,7 +320,7 @@ if (festival.test($request.url)) {
         let body = JSON.parse($response.body);
 
         // 30天后时间戳
-        let timestamp = Math.floor(Date.now() / 1000 + (60 * 60 * 24 * 364));
+        let timestamp = Math.floor(Date.now() / 1000 + (60 * 60 * 24 * 30));
 
         // 删除违规同步 infractions_sync
         if (body?.["body"]?.["infractions_sync"]?.["body"]) {
@@ -353,7 +353,7 @@ if (treasure.test($request.url) || buy_item.test($request.url)) {
         let body = JSON.parse($response.body);
 
         // 30天后时间戳
-        let timestamp = Math.floor(Date.now() / 1000 + (60 * 60 * 24 * 364));
+        let timestamp = Math.floor(Date.now() / 1000 + (60 * 60 * 24 * 30));
 
         // 删除违规同步 infractions_sync
         if (body?.["body"]?.["infractions_sync"]?.["body"]) {
@@ -385,7 +385,7 @@ if (storage.test($request.url)) {
         let body = JSON.parse($response.body);
 
         // 30天后时间戳
-        let timestamp = Math.floor(Date.now() / 1000 + (60 * 60 * 24 * 364));
+        let timestamp = Math.floor(Date.now() / 1000 + (60 * 60 * 24 * 30));
 
         // 删除违规同步 infractions_sync
         if (body?.["body"]?.["infractions_sync"]?.["body"]) {
@@ -428,7 +428,7 @@ if (sync.test($request.url) || script_g.test($request.url) ) {
 	    
         // 30天后时间戳
         let timestamp = new Date().getTime();
-        timestamp = Math.floor((timestamp + (1000 * 60 * 60 * 24 * 364)) / 1000)
+        timestamp = Math.floor((timestamp + (1000 * 60 * 60 * 24 * 30)) / 1000)
 
         // 添加所有改装为最大 prokits_car_parts_full_sync body cars_parts
 
