@@ -244,8 +244,9 @@ if (pre_tle_race.test($request.url)|| post_event_score.test($request.url)) {
     }
 }
 
-let find_room = /^https:([\S\s]*?)mp\/find_room.php/;
-if (find_room.test($request.url)) {
+//let find_room = /^https:([\S\s]*?)mp\/find_room.php/;
+let muilt_play = /^https:([\S\s]*?)gameloft.com\/scripts\/mp/;
+if (muilt_play.test($request.url)) {
 
     if ($response && $response.body) {
         let body = JSON.parse($response.body);
@@ -276,9 +277,10 @@ if (find_room.test($request.url)) {
     }
 }
 
-let start_race = /^https:([\S\s]*?)gauntlet_mode\/start_race.php/;
-let end_race = /^https:([\S\s]*?)gauntlet_mode\/end_race.php/;
-if (start_race.test($request.url) || end_race.test($request.url)) {
+//let start_race = /^https:([\S\s]*?)gauntlet_mode\/start_race.php/;
+//let end_race = /^https:([\S\s]*?)gauntlet_mode\/end_race.php/;
+let guantlet = /^https:([\S\s]*?)gauntlet_mode/;
+if (guantlet.test($request.url)) {
 
     if ($response && $response.body) {
         let body = JSON.parse($response.body);
