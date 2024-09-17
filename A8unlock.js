@@ -372,7 +372,8 @@ if (festival.test($request.url)) {
 }
 
 let treasure = /^https:([\S\s]*?)gameloft.com\/scripts\/treasure_hunt/;
-if (treasure.test($request.url)) {
+let buy_item = /^https:([\S\s]*?)general\/buy_item.php/;
+if (treasure.test($request.url) || buy_item.test($request.url)) {
 
     if ($response && $response.body) {
         let body = JSON.parse($response.body);
