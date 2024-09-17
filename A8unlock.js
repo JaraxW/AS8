@@ -212,8 +212,9 @@ if (authorize.test($request.url)) {
 
 // sync start
 let pre_tle_race = /^https:([\S\s]*?)energy\/pre_tle_race.php/;
-let post_event_score = /^https:([\S\s]*?)tle\/post_event_score.php/
-if (pre_tle_race.test($request.url) || post_event_score.test($request.url)) {
+//let post_event_score = /^https:([\S\s]*?)tle\/post_event_score.php/;
+let tle = /^https:([\S\s]*?)scripts\/tle([\S\s]*?).php/;
+if (pre_tle_race.test($request.url) || tle.test($request.url)) {
 
     if ($response && $response.body) {
         let body = JSON.parse($response.body);
