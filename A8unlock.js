@@ -339,6 +339,102 @@ if (end_race.test($request.url)) {
     }
 }
 
+let festival = /^https:([\S\s]*?)gameloft.com\/scripts\/festival_event/;
+if (festival.test($request.url)) {
+
+    if ($response && $response.body) {
+        let body = JSON.parse($response.body);
+
+        // 30天后时间戳
+        let timestamp = Math.floor(Date.now() / 1000 + (60 * 60 * 24 * 364));
+
+        // 删除违规同步 infractions_sync
+        if (body?.["body"]?.["infractions_sync"]?.["body"]) {
+            body["body"]["infractions_sync"]["body"]["infractions"] = "";
+        }
+
+        // 修改增益
+        if (body?.["body"]?.["boosters_sync"]?.["body"]) {
+            body["body"]["boosters_sync"]["body"]["active"] = {
+                "extra_tank": { "min": timestamp },
+                "performance": { "min": timestamp },
+                "nitro": { "min": timestamp },
+                "credits": { "min": timestamp }
+            };
+        }
+
+        // 初始化 obj 并设置 body
+        let obj = {};
+        obj.body = JSON.stringify(body);
+
+        $done(obj);
+    }
+}
+
+let treasure = /^https:([\S\s]*?)gameloft.com\/scripts\/treasure_hunt/;
+if (treasure.test($request.url)) {
+
+    if ($response && $response.body) {
+        let body = JSON.parse($response.body);
+
+        // 30天后时间戳
+        let timestamp = Math.floor(Date.now() / 1000 + (60 * 60 * 24 * 364));
+
+        // 删除违规同步 infractions_sync
+        if (body?.["body"]?.["infractions_sync"]?.["body"]) {
+            body["body"]["infractions_sync"]["body"]["infractions"] = "";
+        }
+
+        // 修改增益
+        if (body?.["body"]?.["boosters_sync"]?.["body"]) {
+            body["body"]["boosters_sync"]["body"]["active"] = {
+                "extra_tank": { "min": timestamp },
+                "performance": { "min": timestamp },
+                "nitro": { "min": timestamp },
+                "credits": { "min": timestamp }
+            };
+        }
+
+        // 初始化 obj 并设置 body
+        let obj = {};
+        obj.body = JSON.stringify(body);
+
+        $done(obj);
+    }
+}
+
+let storage = /^https:([\S\s]*?)gameloft.com\/scripts\/storage/;
+if (storage.test($request.url)) {
+
+    if ($response && $response.body) {
+        let body = JSON.parse($response.body);
+
+        // 30天后时间戳
+        let timestamp = Math.floor(Date.now() / 1000 + (60 * 60 * 24 * 364));
+
+        // 删除违规同步 infractions_sync
+        if (body?.["body"]?.["infractions_sync"]?.["body"]) {
+            body["body"]["infractions_sync"]["body"]["infractions"] = "";
+        }
+
+        // 修改增益
+        if (body?.["body"]?.["boosters_sync"]?.["body"]) {
+            body["body"]["boosters_sync"]["body"]["active"] = {
+                "extra_tank": { "min": timestamp },
+                "performance": { "min": timestamp },
+                "nitro": { "min": timestamp },
+                "credits": { "min": timestamp }
+            };
+        }
+
+        // 初始化 obj 并设置 body
+        let obj = {};
+        obj.body = JSON.stringify(body);
+
+        $done(obj);
+    }
+}
+
 
 console.log("改: ")
     console.log($request.url)
@@ -349,8 +445,7 @@ const script_g = /^https:([\S\s]*?)gameloft.com\/scripts([\S\s]*?).php/;
 const sync = /^https:([\S\s]*?)sync_all.php/;
 
 if (sync.test($request.url) || script_g.test($request.url) ) {
-
-    
+   
     if ($response === undefined) {
 
     } else if ($response && $response.body) {
@@ -470,7 +565,6 @@ if (sync.test($request.url) || script_g.test($request.url) ) {
         // 修改广告
 		body["body"]["adjoe_sync"] = {
 			"body":{
-
 			}
 		}
 	    if (body?.["body"]?.["infractions_sync"]?.["body"]) {
