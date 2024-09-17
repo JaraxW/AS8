@@ -213,7 +213,7 @@ if (authorize.test($request.url)) {
 // sync start
 let pre_tle_race = /^https:([\S\s]*?)energy\/pre_tle_race.php/;
 let post_event_score = /^https:([\S\s]*?)tle\/post_event_score.php/
-if (pre_tle_race.test($request.url)|| post_event_score.test($request.url)) {
+if (pre_tle_race.test($request.url) || post_event_score.test($request.url)) {
 
     if ($response && $response.body) {
         let body = JSON.parse($response.body);
@@ -246,7 +246,8 @@ if (pre_tle_race.test($request.url)|| post_event_score.test($request.url)) {
 
 //let find_room = /^https:([\S\s]*?)mp\/find_room.php/;
 let muilt_play = /^https:([\S\s]*?)gameloft.com\/scripts\/mp/;
-if (muilt_play.test($request.url)) {
+let claim = /^https:([\S\s]*?)claim.php/;
+if (muilt_play.test($request.url) || claim.test($request.url)) {
 
     if ($response && $response.body) {
         let body = JSON.parse($response.body);
