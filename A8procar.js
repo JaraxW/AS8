@@ -323,7 +323,6 @@ if (sync.test($request.url) ) {
         timestamp = Math.floor((timestamp + (1000 * 60 * 60 * 24 * 30)) / 1000)
 
         // 添加所有改装为最大 prokits_car_parts_full_sync body cars_parts
-
         let cars = []
         let cars_parts = {}
         cars_parts["171"] = {
@@ -379,11 +378,7 @@ if (sync.test($request.url) ) {
 		if ( sync.test($request.url) || undefined != body["body"]["progressive_ads_sync"] ) {
 			body["body"]["progressive_ads_sync"]["body"]["duration"] = 372800
 		}
-	    
-        	if ( sync.test($request.url) || undefined != body["body"]["server_items_full_sync"] ) {
-			body["body"]["server_items_full_sync"]["body"]["cars"] = cars
-		}
-	    
+	    	    
 		body["body"]["prokits_car_parts_full_sync"] = {
 				"body": {
 					"cars_parts": cars_parts,
