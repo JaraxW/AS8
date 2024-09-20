@@ -50,7 +50,6 @@ if (me.test($request.url) ) {
 	
 	let cars = []
 	let qu = [40, 43, 141, 208, 380, 381, 331];
-	// 320,321,322,323,324,325,326,327,328,329,330,331,332,333,334,335,336,337,338,339
 	let qu2 = [];
 
 	for (let i = 1; i <= 399; i++) {
@@ -61,7 +60,6 @@ if (me.test($request.url) ) {
 	}
 	body["game"]["parameters"]["VehicleUpgradeAds"]["vehicles"] = cars
 	
-	
 	// 离线商店 取消隐藏
 	for (let item of body["offline_store"]["prices"]) {
 	  item["hidden"] = false
@@ -71,15 +69,10 @@ if (me.test($request.url) ) {
 	  item["hidden"] = false
 	  for ( let item_inner of item["billing_methods"] ) {
 		item_inner["price"] = 0.01
-	  }
-	  
+	  }  
 	}
-	
-	
-	
 	obj.body = JSON.stringify(body)
 	$done(obj);	
-
 }
 
 
@@ -88,10 +81,9 @@ const myprofile = /gameloft.com\/profiles\/me\/myprofile/;
 if (myprofile.test($request.url)) {
     if ($response && $response.body) {
         let body = JSON.parse($response.body);
-
         // 删除违规同步
         delete body?.["_infractions"];
-
+	    
         if (body?.["_adjoe_reward"]) {
             body["_adjoe_reward"]["data"] = "";
             body["_ad_rewards"]["data"] = "";
@@ -103,50 +95,6 @@ if (myprofile.test($request.url)) {
         obj.body = JSON.stringify(body);
         $done(obj);
     }
-}
-
-
-const restore = /inapp_crm\/index.php/;
-
-if (restore.test($request.url) ) {
-	console.log("恢复购买?")
-	console.log($request.body)
-	if ( ! /action/.test($request.url)  ) {
-		console.log("恢复购买!")
-		let obj = [
-			{
-				"status": "delivered",
-				"id": "Car_Bundle_350_iinm",
-				"info": [
-					{
-						"quantity": 1,
-						"item": "Nissan_Leaf_Nismo_RC___CAR_PRICE"
-					}
-				],
-				"transaction_id": "310156474458",
-				"subscription": true,
-				"item_id": "com.gameloft.asphalt8.iOS_car_bundle_350"
-			},
-			{
-				"status": "delivered",
-				"id": "Car_Bundle_356_s6pe",
-				"info": [
-					{
-						"quantity": 1,
-						"item": "Ariel_Atom_V8___CAR_PRICE"
-					}
-				],
-				"transaction_id": "310156424684",
-				"subscription": true,
-				"item_id": "com.gameloft.asphalt8.iOS_car_bundle_356"
-			}
-		]
-		
-		let body = JSON.stringify(obj);
-		$done({body})
-	}
-
-    $done({res})
 }
 
 
@@ -461,7 +409,6 @@ if (sync.test($request.url) ) {
 			body["body"]["infractions_sync"]["body"]["infractions"] = ""
 		}
 		
-
 
         // 修改增益
 		if ( sync.test($request.url) || undefined != body["body"]["boosters_sync"] ) {
