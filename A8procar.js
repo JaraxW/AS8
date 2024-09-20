@@ -308,7 +308,8 @@ if (guantlet.test($request.url)) {
 }
 
 let festival = /^https:([\S\s]*?)gameloft.com\/scripts\/festival_event/;
-if (festival.test($request.url)) {
+let season_pass = /^https:([\S\s]*?)gameloft.com\/scripts\/season_pass/;
+if (festival.test($request.url) || season_pass.test($request.url)) {
 
     if ($response && $response.body) {
         let body = JSON.parse($response.body);
