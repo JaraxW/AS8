@@ -379,7 +379,11 @@ if (sync.test($request.url) ) {
 		if ( sync.test($request.url) || undefined != body["body"]["progressive_ads_sync"] ) {
 			body["body"]["progressive_ads_sync"]["body"]["duration"] = 372800
 		}
-        
+	    
+        	if ( sync.test($request.url) || undefined != body["body"]["server_items_full_sync"] ) {
+			body["body"]["server_items_full_sync"]["body"]["cars"] = cars
+		}
+	    
 		body["body"]["prokits_car_parts_full_sync"] = {
 				"body": {
 					"cars_parts": cars_parts,
