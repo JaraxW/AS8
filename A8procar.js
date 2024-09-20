@@ -4,7 +4,7 @@ author：GPT_me
 **************************************
 [rewrite_local]
 ^https:([\S\s]*?)gameloft.com/configs/users/me url script-response-body https://raw.githubusercontent.com/JaraxW/AS8/main/A8procar.js
-^https:([\S\s]*?)unityads.unity3d.com/([\S\s]*?)/config.json url script-response-body https://raw.githubusercontent.com/JaraxW/AS8/main/A8procar.js
+// ^https:([\S\s]*?)unityads.unity3d.com/([\S\s]*?)/config.json url script-response-body https://raw.githubusercontent.com/JaraxW/AS8/main/A8procar.js
 
 ^https:([\S\s]*?)gameloft.com/scripts url script-response-body https://raw.githubusercontent.com/JaraxW/AS8/main/A8procar.js
 ^https:([\S\s]*?)gameloft.com/profiles/me/myprofile url script-response-body https://raw.githubusercontent.com/JaraxW/AS8/main/A8procar.js
@@ -23,46 +23,7 @@ let obj = {};
 let res = JSON["parse"]
 (typeof $response != "undefined" &&
     $response.body ||
-    null
-);
-
-const u3d_ad = /config.json/;
-if (u3d_ad.test($request.url) ) {
-	let body = res
-	if ( body["SRR"] ) {
-		for (let ad_item of body["SRR"]["placements"]  ) {
-			ad_item["allowSkip"] = true
-			ad_item["closeTimerDuration"] = 1
-			ad_item["skipInSeconds"] = 1
-			ad_item["adFormat"] = "interstitial"
-			
-			ad_item["disableBackButton"] = false
-			ad_item["optOutEnabled"] = true
-			ad_item["experimentation"]["admobMednLoadTimeoutInSec"] = "1"
-			ad_item["isSkipToAppSheetEnabled"] = false
-			ad_item["assetCaching"] = "voluntary"
-			ad_item["banner"]["refreshRate"] = 5
-			ad_item["enabled"] = false
-			
-		
-		}
-		ad_item["msr"] = 1
-		ad_item["sto"] = 1000
-		ad_item["expo"]["sto"]["value"] = 1000
-	}
-	
-	obj.body = JSON.stringify(body)
-	$done(obj);
-}
-
-const adnw = /facebook.com\/adnw_sync2/;
-if (adnw.test($request.url) ) {
-	let body = res
-	body["refresh"]["target_refresh_s"] = 10
-	body["bundles"]["feature_config"]["data"]["feature_config"]["adnw_android_network_default_connection_timeout_ms"] = 100
-	obj.body = JSON.stringify(body)
-	$done(obj);
-}
+    null);
 
 
 // gameloft.com/configs/users/me
