@@ -30,24 +30,8 @@ let res = JSON["parse"]
 const me = /gameloft.com\/configs\/users\/me/;
 
 if (me.test($request.url) ) {
-	let body = res
-	// 删除广告?
-	body["game"]["parameters"]["init"]["onboardingGift"] = {}
-	body["game"]["parameters"]["InventoryAds"]["slotsLeftForNotify"] = {}
-	body["game"]["parameters"]["ingameAds"]["slotsLeftForNotify"] = {}
-	// 融合点包 ?
-	body["game"]["parameters"]["FusionPointPacks"]["enabled"] = true
-	// 结算多倍积分范围
-	body["game"]["parameters"]["MultiCreditsAdsRewards"] = 
-	{
-		"MinimumReward":30000,
-		"creditsForAdsCap":37500
-	}
-	// ingameAds
-	body["game"]["parameters"]["ingameAds"] = {}
-	 
-	// 是否车辆升级广告 VehicleUpgradeAds vehicles[1,2,386.....]
 	
+	// 是否车辆升级广告 VehicleUpgradeAds vehicles[1,2,386.....]
 	let cars = []
 	let qu = [40, 43, 141, 208, 380, 381, 331];
 	let qu2 = [];
@@ -314,9 +298,8 @@ if (storage.test($request.url)) {
     }
 }
 
-
 console.log("改: ")
-    console.log($request.url)
+	console.log($request.url)
 
 // sync start  gameloft.com/scripts
 
@@ -336,7 +319,6 @@ if (sync.test($request.url) ) {
         // 添加所有改装为最大 prokits_car_parts_full_sync body cars_parts
 
         let cars = []
-
         let cars_parts = {}
         cars_parts["171"] = {
             "tyres": 10,
@@ -350,11 +332,9 @@ if (sync.test($request.url) ) {
             "updated_ts": 1712265302
         }
 
-
         let moto_ids = [
             // todo 
         ]
-
         let qu = [40, 43, 141, 208, 380, 381, 331];
         // 320,321,322,323,324,325,326,327,328,329,330,331,332,333,334,335,336,337,338,339
         let qu2 = [];
@@ -370,7 +350,6 @@ if (sync.test($request.url) ) {
             let ge = 10
             let shi = 10
             let bai = 10
-
 
             cars_parts[i + ""] = {
                 "tyres": bai,
@@ -394,7 +373,6 @@ if (sync.test($request.url) ) {
 		if ( sync.test($request.url) || undefined != body["body"]["progressive_ads_sync"] ) {
 			body["body"]["progressive_ads_sync"]["body"]["duration"] = 372800
 		}
-        
         
 		body["body"]["prokits_car_parts_full_sync"] = {
 				"body": {
