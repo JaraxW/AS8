@@ -66,18 +66,25 @@ if (myprofile.test($request.url)) {
     if ($response && $response.body) {
         let body = JSON.parse($response.body);
         // 删除违规同步
-        delete body?.["_infractions"];
-	    
-        if (body?.["_adjoe_reward"]) {
+        if (body["_infractions"]) {
+            delete body["_infractions"];
+        }
+        if (body["_adjoe_reward"]) {
             body["_adjoe_reward"]["data"] = "";
+        }
+        if (body["_ad_rewards"]) {
             body["_ad_rewards"]["data"] = "";
+        }
+        if (body["_ads_progressive"]) {
             body["_ads_progressive"] = {};
         }
-
         // 初始化 obj 并设置 body
         let obj = {};
         obj.body = JSON.stringify(body);
         $done(obj);
+    } else {
+        // 如果没有响应也需要结束处理
+        $done({});
     }
 }
 
@@ -93,7 +100,6 @@ if (authorize.test($request.url)) {
     body = body.replace(regex, "password=GIHI7x9ofH5q55vJ&");
     // console.log("改完 = " + body)
     $done({body});
-
 }
 
 
