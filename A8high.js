@@ -126,7 +126,7 @@ if (pre_tle_race.test($request.url) || tle.test($request.url)) {
                 "extra_tank": { "min": timestamp },
                 "performance": { "min": timestamp },
                 "nitro": { "min": timestamp },
-                "credits": { "min": timestamp }
+                "credits": { "min": 0 }
             };
         }
 
@@ -160,7 +160,7 @@ if (muilt_play.test($request.url) || claim.test($request.url)) {
                 "extra_tank": { "min": timestamp },
                 "performance": { "min": timestamp },
                 "nitro": { "min": timestamp },
-                "credits": { "min": timestamp }
+                "credits": { "min": 0 }
             };
         }
 
@@ -194,7 +194,7 @@ if (guantlet.test($request.url)) {
                 "extra_tank": { "min": timestamp },
                 "performance": { "min": timestamp },
                 "nitro": { "min": timestamp },
-                "credits": { "min": timestamp }
+                "credits": { "min": 0 }
             };
         }
 
@@ -227,7 +227,7 @@ if (festival.test($request.url) || season_pass.test($request.url)) {
                 "extra_tank": { "min": timestamp },
                 "performance": { "min": timestamp },
                 "nitro": { "min": timestamp },
-                "credits": { "min": timestamp }
+                "credits": { "min": 0 }
             };
         }
 
@@ -260,7 +260,7 @@ if (treasure.test($request.url) || buy_item.test($request.url)) {
                 "extra_tank": { "min": timestamp },
                 "performance": { "min": timestamp },
                 "nitro": { "min": timestamp },
-                "credits": { "min": timestamp }
+                "credits": { "min": 0 }
             };
         }
 
@@ -292,7 +292,7 @@ if (storage.test($request.url)) {
                 "extra_tank": { "min": timestamp },
                 "performance": { "min": timestamp },
                 "nitro": { "min": timestamp },
-                "credits": { "min": timestamp }
+                "credits": { "min": 0 }
             };
         }
 
@@ -411,7 +411,7 @@ if (sync.test($request.url) ) {
 					"min": timestamp
 				},
 				"credits": {
-					"min": timestamp
+					"min": 0
 				}
 			}
 		}
