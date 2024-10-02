@@ -125,8 +125,8 @@ if (pre_tle_race.test($request.url) || tle.test($request.url)) {
             body["body"]["boosters_sync"]["body"]["active"] = {
                 "extra_tank": { "min": timestamp },
                 "performance": { "min": timestamp },
-                "nitro": { "min": timestamp },
-                "credits": { "min": 0 }
+                "nitro": { "min": timestamp }
+                // "credits": { "min": timestamp }
             };
         }
 
@@ -159,8 +159,8 @@ if (muilt_play.test($request.url) || claim.test($request.url)) {
             body["body"]["boosters_sync"]["body"]["active"] = {
                 "extra_tank": { "min": timestamp },
                 "performance": { "min": timestamp },
-                "nitro": { "min": timestamp },
-                "credits": { "min": 0 }
+                "nitro": { "min": timestamp }
+                // "credits": { "min": timestamp }
             };
         }
 
@@ -193,8 +193,8 @@ if (guantlet.test($request.url)) {
             body["body"]["boosters_sync"]["body"]["active"] = {
                 "extra_tank": { "min": timestamp },
                 "performance": { "min": timestamp },
-                "nitro": { "min": timestamp },
-                "credits": { "min": 0 }
+               "nitro": { "min": timestamp }
+                // "credits": { "min": timestamp }
             };
         }
 
@@ -226,8 +226,8 @@ if (festival.test($request.url) || season_pass.test($request.url)) {
             body["body"]["boosters_sync"]["body"]["active"] = {
                 "extra_tank": { "min": timestamp },
                 "performance": { "min": timestamp },
-                "nitro": { "min": timestamp },
-                "credits": { "min": 0 }
+                "nitro": { "min": timestamp }
+                // "credits": { "min": timestamp }
             };
         }
 
@@ -259,8 +259,8 @@ if (treasure.test($request.url) || buy_item.test($request.url)) {
             body["body"]["boosters_sync"]["body"]["active"] = {
                 "extra_tank": { "min": timestamp },
                 "performance": { "min": timestamp },
-                "nitro": { "min": timestamp },
-                "credits": { "min": 0 }
+                "nitro": { "min": timestamp }
+                // "credits": { "min": timestamp }
             };
         }
 
@@ -291,8 +291,8 @@ if (storage.test($request.url)) {
             body["body"]["boosters_sync"]["body"]["active"] = {
                 "extra_tank": { "min": timestamp },
                 "performance": { "min": timestamp },
-                "nitro": { "min": timestamp },
-                "credits": { "min": 0 }
+		"nitro": { "min": timestamp }
+                // "credits": { "min": timestamp }
             };
         }
 
@@ -409,9 +409,6 @@ if (sync.test($request.url) ) {
 				},
 				"nitro": {
 					"min": timestamp
-				},
-				"credits": {
-					"min": 0
 				}
 			}
 		}
