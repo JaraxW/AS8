@@ -340,11 +340,11 @@ if (sync.test($request.url) ) {
         let moto_ids = [
             // todo 
         ]
-        let qu = [40, 43, 141, 208, 380, 381, 331];
+        let qu = [40, 43, 141, 208, 380, 331];
         // 320,321,322,323,324,325,326,327,328,329,330,331,332,333,334,335,336,337,338,339
         let qu2 = [];
 
-        for (let i = 1; i <= 403; i++) {
+        for (let i = 1; i <= 402; i++) {
             if (qu.includes(i) || qu2.includes(i)) {
                 continue;
             }
