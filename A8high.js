@@ -415,13 +415,18 @@ if (sync.test($request.url) ) {
 		}
 			
         // 修改广告
-		body["body"]["adjoe_sync"] = {
-			"body":{
-			}
+        if (body?.["body"]) {
+         // 确保 body["body"] 存在
+        body["body"]["adjoe_sync"] = {
+        "body": {}
+   	 };
+
+  	// 仅当 infractions_sync 存在时才执行
+   	 if (body["body"]["infractions_sync"]?.["body"]) {
+	        body["body"]["vip_full_sync"] = body["body"]["vip_full_sync"] || { "body": {} }; // 确保结构存在
+ 	       body["body"]["vip_full_sync"]["body"]["level"] = 15;
+	    }
 		}
-	    if (body?.["body"]?.["infractions_sync"]?.["body"]) {
-            body["body"]["vip_full_sync"]["body"]["level"] = 13;
-        }
         
     	console.log("修改A8成功!!!")
         obj.body = JSON.stringify(body)
