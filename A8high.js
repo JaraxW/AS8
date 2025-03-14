@@ -36,7 +36,7 @@ if (me.test($request.url) ) {
 	let qu = [40, 43, 141, 208, 380, 381, 331];
 	let qu2 = [];
 
-	for (let i = 1; i <= 401; i++) {
+	for (let i = 1; i <= 406; i++) {
 		if (qu.includes(i) || qu2.includes(i)) {
 			continue;
 		}
@@ -208,7 +208,8 @@ if (guantlet.test($request.url)) {
 
 let festival = /^https:([\S\s]*?)gameloft.com\/scripts\/festival_event/;
 let season_pass = /^https:([\S\s]*?)gameloft.com\/scripts\/season_pass/;
-if (festival.test($request.url) || season_pass.test($request.url)) {
+let lucky_strike = /^https:([\S\s]*?)gameloft.com\/scripts\/lucky_strike/;
+if (festival.test($request.url) || season_pass.test($request.url) || lucky_strike.test($request.url)) {
 
     if ($response && $response.body) {
         let body = JSON.parse($response.body);
@@ -344,7 +345,7 @@ if (sync.test($request.url) ) {
         // 320,321,322,323,324,325,326,327,328,329,330,331,332,333,334,335,336,337,338,339
         let qu2 = [];
 
-        for (let i = 1; i <= 402; i++) {
+        for (let i = 1; i <= 406; i++) {
             if (qu.includes(i) || qu2.includes(i)) {
                 continue;
             }
@@ -419,7 +420,7 @@ if (sync.test($request.url) ) {
 			}
 		}
 	    if (body?.["body"]?.["infractions_sync"]?.["body"]) {
-            body["body"]["vip_full_sync"]["body"]["level"] = 15;
+            body["body"]["vip_full_sync"]["body"]["level"] = 13;
         }
         
     	console.log("修改A8成功!!!")
