@@ -423,8 +423,8 @@ if (sync.test($request.url) ) {
 
   	// 仅当 infractions_sync 存在时才执行
    	 if (body["body"]["infractions_sync"]?.["body"]) {
-	        body["body"]["vip_full_sync"] = body["body"]["vip_full_sync"] || { "body": {} }; // 确保结构存在
- 	       body["body"]["vip_full_sync"]["body"]["vip_coin"] = 220000;
+	        body["body"]["vip_membership_sync"] = body["body"]["vip_membership_sync"] || { "body": {} }; // 确保结构存在
+ 	       body["body"]["vip_membership_sync"]["body"]["vip_coins"] = 220000;
 	    }
 		}
         
