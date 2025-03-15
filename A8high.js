@@ -163,7 +163,12 @@ if (muilt_play.test($request.url) || claim.test($request.url)) {
                 // "credits": { "min": timestamp }
             };
         }
-
+	    
+	//VIP
+	if (body?.["body"]?.["vip_full_sync"]?.["body"]) {
+	   body["body"]["vip_full_sync"]["body"]["level"] = 15
+	}
+		
         // 初始化 obj 并设置 body
         let obj = {};
         obj.body = JSON.stringify(body);
@@ -423,8 +428,8 @@ if (sync.test($request.url) ) {
 
   	// 仅当 infractions_sync 存在时才执行
    	 if (body["body"]["infractions_sync"]?.["body"]) {
-	        body["body"]["vip_membership_sync"] = body["body"]["vip_membership_sync"] || { "body": {} }; // 确保结构存在
- 	       body["body"]["vip_membership_sync"]["body"]["level"] = 15;
+	        body["body"]["vip_full_sync"] = body["body"]["vip_full_sync"] || { "body": {} }; // 确保结构存在
+ 	       body["body"]["vip_full_sync"]["body"]["level"] = 15;
 	    }
 		}
         
