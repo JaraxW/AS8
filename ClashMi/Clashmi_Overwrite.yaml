@@ -128,7 +128,7 @@ proxy-groups:
   - {name: Spotify,   <<: *Anchor_OB, icon: https://github.com/Seven1echo/Yaml/raw/main/icons/Spotify.png} 
   - {name: PayPal,    <<: *Anchor_OB, icon: https://github.com/Seven1echo/Yaml/raw/main/icons/PayPal.png}
   - {name: Speedtest, <<: *Anchor_OB, icon: https://github.com/Seven1echo/Yaml/raw/main/icons/Speedtest.png}
-  - {name: adblock,   <<: *Anchor_OB, icon: https://github.com/JaraxW/AS8/blob/main/ClashMi/Adblock-180x180.png}
+  - {name: adblock,   <<: *Anchor_OB, icon: https://github.com/JaraxW/AS8/blob/main/ClashMi/Adblock.png}
   - {name: 漏网之鱼,   <<: *Anchor_OB, icon: https://github.com/Seven1echo/Yaml/raw/main/icons/MATCH.png}
 
 # 策略组（按区域分组）
