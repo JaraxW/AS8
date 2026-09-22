@@ -30,7 +30,7 @@ Anchor_OT: &Anchor_OT '^(?!.*(DIRECT|香港|台湾|日本|新加坡|韩国|美�
 
 # ███████████████████████████ 节点订阅 ███████████████████████████
 # proxy-providers:
-  机场名: {<<: *Anchor_PR, url: '订阅链接', override: {additional-prefix: '[机场名] '}}
+#  机场名: {<<: *Anchor_PR, url: '订阅链接', override: {additional-prefix: '[机场名] '}}
 
 # ███████████████████████████ 核心配置 ███████████████████████████
 # ══ 基础配置 ══
