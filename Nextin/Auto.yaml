@@ -1,0 +1,98 @@
+# Nextin iOS Auto — 2026-10-02
+# 以用户上传的 Seven1 TXT 原版为配置/规则来源，适配 Nextin「订阅模板覆写」。
+# 绑定已有订阅后由 Nextin 注入节点；这不是自带节点的独立订阅。
+# 保留 ChatGPT / Claude / Gemini / YouTube / AppleTV / Telegram / Microsoft / Apple。
+# 七地区自动组选低延迟节点：lazy=true、30分钟一次；仍保留地区手动与全部节点。
+# 在「一键代理」或服务组中选择地区自动组后使用；默认入口为「全部节点」。
+# 只启用 TLS443 / HTTP80 嗅探，不覆盖实际目标，不强制所有 DNS 映射流量。
+# 没有全局 UDP443 拦截；没有额外的 fallback 组；保留国内域名/IP 与 MRS。
+# 空地区组 REJECT，可换「全部节点」；url-test 不等于带宽或地区解锁测试。
+# iOS TUN/端口/面板由 Nextin 管理，不照搬桌面配置。
+# 内存改善需手机实测；自动组可能在初始化或人工测速时触发额外检测。
+# Nextin Auto 紧凑版：设置 → 订阅模板覆写，绑定已有订阅。
+# 仅压缩排版与复用重复字段；规则顺序、组内节点顺序及参数保持原版。
+# 地区自动组：30分钟按需测速；在一键代理或服务组中选择对应自动组。
+x-nextin: {version: 1, mode: subscription-template}
+proxies: []
+mode: rule
+ipv6: true
+log-level: warning
+unified-delay: true
+tcp-concurrent: true
+profile: {store-selected: true, store-fake-ip: true}
+sniffer: {enable: true, override-destination: false, parse-pure-ip: true, force-dns-mapping: false, sniff: {TLS: {ports: [443]}, HTTP: {ports: [80]}}, skip-domain: [Mijia Cloud, dlg.io.mi.com, +.oray.com, +.sunlogin.net, +.push.apple.com]}
+
+dns:
+  enable: true
+  ipv6: true
+  listen: '127.0.0.1:7874'
+  enhanced-mode: fake-ip
+  fake-ip-range: 198.18.0.1/16
+  fake-ip-filter-mode: blacklist
+  respect-rules: false
+  fake-ip-filter: [+.lan, +.local, 'rule-set:add_direct_domain', 'rule-set:cn_domain']
+  nameserver: [223.5.5.5, 114.114.114.114]
+  cache-algorithm: lru
+
+proxy-groups:
+  - {name: 一键代理, type: select, proxies: [全部节点, 香港-自动, 台湾-自动, 日本-自动, 新加坡-自动, 韩国-自动, 美国-自动, 欧洲-自动, 香港-手动, 台湾-手动, 日本-手动, 新加坡-手动, 韩国-手动, 美国-手动, 欧洲-手动, 国内直连]}
+  - {name: ChatGPT, type: select, proxies: &choices1 [一键代理, 全部节点, 香港-自动, 台湾-自动, 日本-自动, 新加坡-自动, 韩国-自动, 美国-自动, 欧洲-自动, 香港-手动, 台湾-手动, 日本-手动, 新加坡-手动, 韩国-手动, 美国-手动, 欧洲-手动, 国内直连]}
+  - {name: Claude, type: select, proxies: *choices1}
+  - {name: Gemini, type: select, proxies: *choices1}
+  - {name: YouTube, type: select, proxies: *choices1}
+  - {name: AppleTV, type: select, proxies: *choices1}
+  - {name: Telegram, type: select, proxies: *choices1}
+  - {name: Microsoft, type: select, proxies: &choices2 [国内直连, 一键代理, 全部节点, 香港-自动, 台湾-自动, 日本-自动, 新加坡-自动, 韩国-自动, 美国-自动, 欧洲-自动, 香港-手动, 台湾-手动, 日本-手动, 新加坡-手动, 韩国-手动, 美国-手动, 欧洲-手动]}
+  - {name: Apple, type: select, proxies: *choices2}
+  - {name: 漏网之鱼, type: select, proxies: *choices1}
+  - {name: 国内直连, type: select, proxies: [DIRECT], hidden: true}
+  - {name: 全部节点, <<: &manual {type: select, include-all-proxies: true, exclude-filter: '(?i)(到期|过期|剩余|网址|官网|邮箱|订阅|套餐|流量|说明|重置|expire|traffic|DIRECT|直接连接)', empty-fallback: REJECT}}
+  - {name: 香港-自动, <<: &auto {type: url-test, include-all-proxies: true, exclude-filter: '(?i)(到期|过期|剩余|网址|官网|邮箱|订阅|套餐|流量|说明|重置|expire|traffic|DIRECT|直接连接)', empty-fallback: REJECT, url: 'https://www.gstatic.com/generate_204', interval: 1800, lazy: true, tolerance: 100, timeout: 5000, max-failed-times: 3, expected-status: 204}, filter: &region1 "(?i)(香港|🇭🇰|\\bHK\\b|\\bHKG\\b|Hong\\s?Kong)"}
+  - {name: 台湾-自动, <<: *auto, filter: &region2 "(?i)(台湾|台灣|🇹🇼|\\bTW\\b|\\bTPE\\b|\\bTSA\\b|\\bKHH\\b|Taiwan|Taipei)"}
+  - {name: 日本-自动, <<: *auto, filter: &region3 "(?i)(日本|🇯🇵|\\bJP\\b|Japan|Tokyo|\\bNRT\\b|\\bHND\\b|\\bKIX\\b|\\bCTS\\b|\\bFUK\\b)"}
+  - {name: 新加坡-自动, <<: *auto, filter: &region4 "(?i)(新加坡|🇸🇬|\\bSG\\b|Singapore|\\bSIN\\b|\\bXSP\\b)"}
+  - {name: 韩国-自动, <<: *auto, filter: &region5 "(?i)(韩国|韓國|首尔|首爾|🇰🇷|\\bKR\\b|Korea|Seoul|\\bICN\\b|\\bGMP\\b|\\bPUS\\b)"}
+  - {name: 美国-自动, <<: *auto, filter: &region6 "(?i)(美国|美國|🇺🇸|\\bUS\\b|\\bUSA\\b|United States|America|\\bSJC\\b|\\bJFK\\b|\\bLAX\\b|\\bSFO\\b|\\bSEA\\b|\\bIAD\\b|\\bORD\\b|\\bATL\\b|\\bDFW\\b|\\bMIA\\b)"}
+  - {name: 欧洲-自动, <<: *auto, filter: &region7 "(?i)(英国|德国|法国|荷兰|意大利|西班牙|瑞典|瑞士|芬兰|挪威|丹麦|奥地利|比利时|爱尔兰|波兰|葡萄牙|捷克|希腊|匈牙利|罗马尼亚|保加利亚|克罗地亚|塞浦路斯|爱沙尼亚|拉脱维亚|立陶宛|卢森堡|马耳他|斯洛伐克|斯洛文尼亚|🇬🇧|🇩🇪|🇫🇷|🇳🇱|🇮🇹|🇪🇸|🇸🇪|🇨🇭|🇫🇮|🇳🇴|🇩🇰|🇦🇹|🇧🇪|🇮🇪|🇵🇱|🇵🇹|🇨🇿|\\bUK\\b|\\bGB\\b|\\bDE\\b|\\bFR\\b|\\bNL\\b|\\bLHR\\b|\\bFRA\\b|\\bAMS\\b|\\bCDG\\b|\\bMAD\\b|\\bBCN\\b|\\bFCO\\b|\\bMUC\\b|\\bBRU\\b)"}
+  - {name: 香港-手动, <<: *manual, filter: *region1}
+  - {name: 台湾-手动, <<: *manual, filter: *region2}
+  - {name: 日本-手动, <<: *manual, filter: *region3}
+  - {name: 新加坡-手动, <<: *manual, filter: *region4}
+  - {name: 韩国-手动, <<: *manual, filter: *region5}
+  - {name: 美国-手动, <<: *manual, filter: *region6}
+  - {name: 欧洲-手动, <<: *manual, filter: *region7}
+
+rules:
+  - RULE-SET,private_domain,国内直连
+  - RULE-SET,private_ip,国内直连,no-resolve
+  - RULE-SET,openai_domain,ChatGPT
+  - RULE-SET,anthropic_domain,Claude
+  - RULE-SET,google-gemini_domain,Gemini
+  - RULE-SET,youtube_domain,YouTube
+  - RULE-SET,google_domain,一键代理
+  - RULE-SET,appletv_domain,AppleTV
+  - RULE-SET,telegram_domain,Telegram
+  - RULE-SET,microsoft_domain,Microsoft
+  - RULE-SET,apple_domain,Apple
+  - RULE-SET,telegram_ip,Telegram,no-resolve
+  - RULE-SET,add_direct_domain,国内直连
+  - RULE-SET,cn_domain,国内直连
+  - RULE-SET,cn_ip,国内直连,no-resolve
+  - MATCH,漏网之鱼
+
+rule-providers:
+  private_domain: {<<: &mrs_domain {type: http, behavior: domain, format: mrs, interval: 86400, proxy: 一键代理}, path: ./rules/Nextin-Auto/private_domain.mrs, url: 'https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/private.mrs'}
+  openai_domain: {<<: *mrs_domain, path: ./rules/Nextin-Auto/openai_domain.mrs, url: 'https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/openai.mrs'}
+  anthropic_domain: {<<: *mrs_domain, path: ./rules/Nextin-Auto/anthropic_domain.mrs, url: 'https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/anthropic.mrs'}
+  google-gemini_domain: {<<: *mrs_domain, path: ./rules/Nextin-Auto/google-gemini_domain.mrs, url: 'https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/google-gemini.mrs'}
+  youtube_domain: {<<: *mrs_domain, path: ./rules/Nextin-Auto/youtube_domain.mrs, url: 'https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/youtube.mrs'}
+  google_domain: {<<: *mrs_domain, path: ./rules/Nextin-Auto/google_domain.mrs, url: 'https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/google.mrs'}
+  appletv_domain: {<<: *mrs_domain, path: ./rules/Nextin-Auto/appletv_domain.mrs, url: 'https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/apple-tvplus.mrs'}
+  telegram_domain: {<<: *mrs_domain, path: ./rules/Nextin-Auto/telegram_domain.mrs, url: 'https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/telegram.mrs'}
+  microsoft_domain: {<<: *mrs_domain, path: ./rules/Nextin-Auto/microsoft_domain.mrs, url: 'https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/microsoft.mrs'}
+  apple_domain: {<<: *mrs_domain, path: ./rules/Nextin-Auto/apple_domain.mrs, url: 'https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/apple.mrs'}
+  add_direct_domain: {<<: *mrs_domain, path: ./rules/Nextin-Auto/add_direct_domain.mrs, url: 'https://raw.githubusercontent.com/Seven1echo/Yaml/refs/heads/main/rules/Seven1_Direct_Domain.mrs'}
+  cn_domain: {<<: *mrs_domain, path: ./rules/Nextin-Auto/cn_domain.mrs, url: 'https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/cn.mrs'}
+  private_ip: {<<: &mrs_ip {type: http, behavior: ipcidr, format: mrs, interval: 86400, proxy: 一键代理}, path: ./rules/Nextin-Auto/private_ip.mrs, url: 'https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geoip/private.mrs'}
+  telegram_ip: {<<: *mrs_ip, path: ./rules/Nextin-Auto/telegram_ip.mrs, url: 'https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geoip/telegram.mrs'}
+  cn_ip: {<<: *mrs_ip, path: ./rules/Nextin-Auto/cn_ip.mrs, url: 'https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geoip/cn.mrs'}
