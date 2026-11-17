@@ -72,7 +72,7 @@ rules:
   - MATCH,漏网之鱼
 
 rule-providers:
-  private_domain: {<<: &mrs_domain {type: http, behavior: domain, format: mrs, interval: 86400, proxy: 一键代理}, path: ./rules/Nextin-Lite/private_domain.mrs, url: 'https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/private.mrs'}
+  private_domain: {<<: &mrs_domain {type: http, behavior: domain, format: mrs, interval: 86400}, path: ./rules/Nextin-Lite/private_domain.mrs, url: 'https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/private.mrs'}
   games@cn_domain: {<<: *mrs_domain, path: ./rules/Nextin-Lite/games@cn_domain.mrs, url: 'https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/category-games@cn.mrs'}
   ai-!cn_domain: {<<: *mrs_domain, path: ./rules/Nextin-Lite/ai-!cn_domain.mrs, url: 'https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/category-ai-!cn.mrs'}
   youtube_domain: {<<: *mrs_domain, path: ./rules/Nextin-Lite/youtube_domain.mrs, url: 'https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/youtube.mrs'}
@@ -82,6 +82,6 @@ rule-providers:
   apple_domain: {<<: *mrs_domain, path: ./rules/Nextin-Lite/apple_domain.mrs, url: 'https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/apple.mrs'}
   add_direct_domain: {<<: *mrs_domain, path: ./rules/Nextin-Lite/add_direct_domain.mrs, url: 'https://raw.githubusercontent.com/Seven1echo/Yaml/refs/heads/main/rules/Seven1_Direct_Domain.mrs'}
   cn_domain: {<<: *mrs_domain, path: ./rules/Nextin-Lite/cn_domain.mrs, url: 'https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/cn.mrs'}
-  private_ip: {<<: &mrs_ip {type: http, behavior: ipcidr, format: mrs, interval: 86400, proxy: 一键代理}, path: ./rules/Nextin-Lite/private_ip.mrs, url: 'https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geoip/private.mrs'}
+  private_ip: {<<: &mrs_ip {type: http, behavior: ipcidr, format: mrs, interval: 86400}, path: ./rules/Nextin-Lite/private_ip.mrs, url: 'https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geoip/private.mrs'}
   telegram_ip: {<<: *mrs_ip, path: ./rules/Nextin-Lite/telegram_ip.mrs, url: 'https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geoip/telegram.mrs'}
   cn_ip: {<<: *mrs_ip, path: ./rules/Nextin-Lite/cn_ip.mrs, url: 'https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geoip/cn.mrs'}
