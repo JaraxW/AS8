@@ -38,7 +38,8 @@ dns:
   nameserver: [114.114.114.114, 223.5.5.5]
 
 proxy-groups:
-  - {name: 自选, type: select, proxies: [香港-手动, 台湾-手动, 日本-手动, 新加坡-手动, 韩国-手动, 美国-手动, 欧洲-手动, 国内直连, 全部节点]}
+  - {name: 全部节点, <<: &manual {type: select, include-all-proxies: true, exclude-filter: '(?i)(到期|过期|剩余|网址|官网|邮箱|订阅|套餐|流量|说明|重置|expire|traffic|DIRECT|直接连接)', empty-fallback: REJECT}}
+  - {name: 一键代理, type: select, proxies: [香港-手动, 台湾-手动, 日本-手动, 新加坡-手动, 韩国-手动, 美国-手动, 欧洲-手动, 国内直连, 全部节点]}
   - {name: AI, type: select, proxies: &choices1 [一键代理, 全部节点, 香港-手动, 台湾-手动, 日本-手动, 新加坡-手动, 韩国-手动, 美国-手动, 欧洲-手动, 国内直连]}
   - {name: YouTube, type: select, proxies: *choices1}
   - {name: Telegram, type: select, proxies: *choices1}
@@ -46,7 +47,6 @@ proxy-groups:
   - {name: Apple, type: select, proxies: *choices2}
   - {name: 漏网之鱼, type: select, proxies: *choices1}
   - {name: 国内直连, type: select, proxies: [DIRECT], hidden: true}
-  - {name: 全部节点, <<: &manual {type: select, include-all-proxies: true, exclude-filter: '(?i)(到期|过期|剩余|网址|官网|邮箱|订阅|套餐|流量|说明|重置|expire|traffic|DIRECT|直接连接)', empty-fallback: REJECT}}
   - {name: 香港-手动, <<: *manual, filter: '(?i)(香港|🇭🇰|\bHK\b|\bHKG\b|Hong\s?Kong)'}
   - {name: 台湾-手动, <<: *manual, filter: '(?i)(台湾|台灣|🇹🇼|\bTW\b|\bTPE\b|\bTSA\b|\bKHH\b|Taiwan|Taipei)'}
   - {name: 日本-手动, <<: *manual, filter: '(?i)(日本|🇯🇵|\bJP\b|Japan|Tokyo|\bNRT\b|\bHND\b|\bKIX\b|\bCTS\b|\bFUK\b)'}
